@@ -35,8 +35,8 @@ Windows 桌面图标布局的备份、预览与恢复工具，基于 Tauri 2 + R
 
 从 [Releases](https://github.com/qcytkk/win-desktop-icon-backup-manager/releases) 下载：
 
-- `桌面图标备份_<版本>_x64-setup.exe` — NSIS 安装包（当前用户安装）
-- `桌面图标备份.exe` — 便携版，双击即用
+- `desktop-icon-backup_<版本>_x64-setup.exe` — NSIS 安装包（当前用户安装）
+- `desktop-icon-backup_<版本>_portable.exe` — 便携版，双击即用
 
 系统要求：Windows 10 / 11（x64），WebView2 运行时。
 
@@ -124,8 +124,8 @@ This app records icon names and positions together with resolution, DPI, scale f
 
 Get the latest build from [Releases](https://github.com/qcytkk/win-desktop-icon-backup-manager/releases):
 
-- `桌面图标备份_<version>_x64-setup.exe` — NSIS installer (per-user)
-- `桌面图标备份.exe` — portable executable
+- `desktop-icon-backup_<version>_x64-setup.exe` — NSIS installer (per-user)
+- `desktop-icon-backup_<version>_portable.exe` — portable executable
 
 Requires Windows 10 / 11 (x64) with the WebView2 runtime.
 
