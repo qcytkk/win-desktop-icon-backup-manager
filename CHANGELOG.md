@@ -2,6 +2,12 @@
 
 本项目遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/) 与 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.3.1] - 2026-11-05
+
+### 修复
+
+- **右键菜单备份后列表不刷新**：桌面右键菜单触发的备份改由正在运行的实例处理，完成后通知主界面刷新备份列表；软件未运行时仍执行一次性备份并退出。此前独立进程只写磁盘，界面列表要重启后才更新。
+
 ## [0.3.0] - 2026-11-05
 
 ### 新增
@@ -51,6 +57,7 @@
 - 安装包：`desktop-icon-backup_0.1.0_x64-setup.exe`（NSIS，当前用户安装）
 - 便携版：`desktop-icon-backup_0.1.0_portable.exe`
 
+[0.3.1]: https://github.com/qcytkk/win-desktop-icon-backup-manager/releases/tag/v0.3.1
 [0.3.0]: https://github.com/qcytkk/win-desktop-icon-backup-manager/releases/tag/v0.3.0
 [0.2.0]: https://github.com/qcytkk/win-desktop-icon-backup-manager/releases/tag/v0.2.0
 [0.1.1]: https://github.com/qcytkk/win-desktop-icon-backup-manager/releases/tag/v0.1.1

@@ -356,6 +356,7 @@ onUnmounted(() => {
               </button>
             </div>
           </div>
+          <hr class="setting-divider" aria-hidden="true" />
           <div class="setting-row">
             <div class="row-label">
               <b>{{ t('settings.contextMenuLabel') }}</b>

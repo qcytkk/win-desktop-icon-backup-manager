@@ -5,19 +5,37 @@ pub mod models;
 pub mod storage;
 pub mod tray;
 
-use tauri::{Manager, WindowEvent};
+use tauri::{Emitter, Manager, WindowEvent};
+
+fn run_backup_now(app: tauri::AppHandle) {
+    std::thread::spawn(move || {
+        desktop::guard::log(&app, "收到右键菜单备份请求");
+        let result = commands::create_backup_headless(&app).map(|record| record.icon_count);
+        // 先通知主界面刷新，再弹提示，避免用户关闭提示前列表仍是旧数据。
+        let _ = app.emit("backups-changed", ());
+        desktop::guard::log(
+            &app,
+            &match &result {
+                Ok(count) => format!("右键菜单备份完成：{} 个图标", count),
+                Err(err) => format!("右键菜单备份失败：{}", err),
+            },
+        );
+        let language = storage::settings::load(&app).language;
+        message_box::backup_result(&language, result);
+    });
+}
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run(backup_now: bool, autostart: bool) {
-    let mut builder = tauri::Builder::default();
-    if !backup_now {
-        // 单实例：重复启动时唤起已有实例的主界面。
-        builder = builder.plugin(tauri_plugin_single_instance::init(|app, _argv, _cwd| {
-            tray::show_main_window(app.clone());
-        }));
-    }
-
-    builder
+    tauri::Builder::default()
+        // 单实例：重复启动时唤起已有实例；右键菜单备份交由已有实例处理。
+        .plugin(tauri_plugin_single_instance::init(|app, argv, _cwd| {
+            if argv.iter().any(|arg| arg == "--backup-now") {
+                run_backup_now(app.clone());
+            } else {
+                tray::show_main_window(app.clone());
+            }
+        }))
         .plugin(tauri_plugin_dialog::init())
         .setup(move |app| {
             let handle = app.handle().clone();

@@ -1,6 +1,6 @@
 [package]
 name = "desktop-icon-backup"
-version = "0.3.0"
+version = "0.3.1"
 description = "Desktop icon layout backup manager"
 authors = ["liang"]
 edition = "2021"

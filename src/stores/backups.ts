@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { invoke } from '@tauri-apps/api/core'
+import { listen } from '@tauri-apps/api/event'
 
 import type { BackupRecord, IconMap, ViewMode } from '../types'
 
@@ -66,6 +67,14 @@ export const useBackupStore = defineStore('backups', {
   actions: {
     async init() {
       await this.refresh()
+      // 右键菜单在独立进程里完成备份时，由主实例发出事件，界面据此刷新列表。
+      try {
+        await listen('backups-changed', () => {
+          void this.refresh()
+        })
+      } catch {
+        // 非 Tauri 环境或事件注册失败时忽略，不影响基础功能。
+      }
     },
     async refresh() {
       this.loading = true

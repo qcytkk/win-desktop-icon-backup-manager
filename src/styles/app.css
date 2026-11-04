@@ -1334,6 +1334,13 @@ h1 {
   gap: 24px;
 }
 
+.setting-divider {
+  height: 0;
+  margin: 16px 0;
+  border: 0;
+  border-top: 1px dashed var(--line-strong);
+}
+
 .row-label {
   min-width: 0;
 }
