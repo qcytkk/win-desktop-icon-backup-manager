@@ -58,6 +58,8 @@ export interface AppSettings {
   fontSize: FontSize
   storageMode: StorageMode
   customPath: string
+  autoStart: boolean
+  contextMenu: boolean
 }
 
 export interface PathsInfo {
@@ -79,5 +81,6 @@ export interface ApplyResult {
   missing: string[]
   newPlaced: number
   autoArrangeDisabled: boolean
+  registrySynced: boolean
   warnings: string[]
 }

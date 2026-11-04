@@ -10,6 +10,8 @@ const DEFAULTS: AppSettings = {
   fontSize: 'normal',
   storageMode: 'documents',
   customPath: '',
+  autoStart: true,
+  contextMenu: true,
 }
 
 export const useSettingsStore = defineStore('settings', {
@@ -31,6 +33,8 @@ export const useSettingsStore = defineStore('settings', {
         fontSize: view.fontSize,
         storageMode: view.storageMode,
         customPath: view.customPath,
+        autoStart: view.autoStart,
+        contextMenu: view.contextMenu,
       }
       this.paths = view.paths
       this.applyAppearance()

@@ -79,6 +79,26 @@ async function changeFont(size: FontSize) {
   }
 }
 
+async function toggleAutoStart() {
+  const next = !store.settings.autoStart
+  try {
+    await store.persist({ autoStart: next })
+    showToast(t(next ? 'toast.autoStartOn' : 'toast.autoStartOff'))
+  } catch (err) {
+    showToast(t('toast.error', { msg: String(err) }))
+  }
+}
+
+async function toggleContextMenu() {
+  const next = !store.settings.contextMenu
+  try {
+    await store.persist({ contextMenu: next })
+    showToast(t(next ? 'toast.contextMenuOn' : 'toast.contextMenuOff'))
+  } catch (err) {
+    showToast(t('toast.error', { msg: String(err) }))
+  }
+}
+
 async function pickFolder(): Promise<string | null> {
   const result = await open({
     directory: true,
@@ -308,6 +328,49 @@ onUnmounted(() => {
                 @click="changeCustomFolder"
               >
                 {{ t('settings.change') }}
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section class="settings-section" aria-labelledby="systemLabel">
+          <div class="section-head">
+            <h3 id="systemLabel">{{ t('settings.systemSection') }}</h3>
+            <p>{{ t('settings.systemDesc') }}</p>
+          </div>
+          <div class="setting-row">
+            <div class="row-label">
+              <b>{{ t('settings.autoStartLabel') }}</b>
+              <small>{{ t('settings.autoStartHint') }}</small>
+            </div>
+            <div class="row-control">
+              <button
+                class="toggle-switch"
+                type="button"
+                role="switch"
+                :aria-checked="store.settings.autoStart"
+                :aria-label="t('settings.autoStartLabel')"
+                @click="toggleAutoStart"
+              >
+                <span class="toggle-knob" aria-hidden="true"></span>
+              </button>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="row-label">
+              <b>{{ t('settings.contextMenuLabel') }}</b>
+              <small>{{ t('settings.contextMenuHint') }}</small>
+            </div>
+            <div class="row-control">
+              <button
+                class="toggle-switch"
+                type="button"
+                role="switch"
+                :aria-checked="store.settings.contextMenu"
+                :aria-label="t('settings.contextMenuLabel')"
+                @click="toggleContextMenu"
+              >
+                <span class="toggle-knob" aria-hidden="true"></span>
               </button>
             </div>
           </div>

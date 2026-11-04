@@ -118,6 +118,9 @@ async function doApply(mode: 'current' | 'backup') {
     if (result.autoArrangeDisabled) {
       message += ` · ${t('toast.autoArrange')}`
     }
+    if (result.registrySynced) {
+      message += ` · ${t('toast.registrySynced')}`
+    }
     showToast(message)
   } catch (err) {
     showToast(t('toast.error', { msg: String(err) }))

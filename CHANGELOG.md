@@ -2,6 +2,21 @@
 
 本项目遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/) 与 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.3.0] - 2026-11-05
+
+### 新增
+
+- **开机自启 + 隐藏守护**：登录后自动在系统托盘运行，不显示主窗口；监听刷新率 / 分辨率 / 显示模式变化，自动重放「当前使用中的布局」。设置页提供「开机后软件自启动」开关。
+- **系统托盘**：托盘菜单提供「显示主界面」「退出」；开启自启时关闭主窗口会隐藏到托盘而不是退出。
+- **桌面右键菜单**：桌面空白处右键新增「备份当前桌面布局」；设置页提供对应开关，可随时注册或移除。
+- **布局写盘兜底**：应用布局后解析 `IconLayouts`，按图标名称索引把网格行列坐标直接写回注册表；即使 Explorer 未及时保存视图状态，盘上也留有一份与本次应用一致的布局。失败只记录警告，不影响布局应用。细节见 `docs/布局持久化方案.md`。
+- **版本管理**：新增 `docs/版本管理.md` 与 `docs/v0.3开发计划.md`，统一版本号、更新日志与发布流程。
+
+### 变更
+
+- 应用布局成功后记录活动布局（`guard.json`），供守护进程在登录/显示变化后恢复。
+- `IconLayouts` 直写保留为兜底；守护进程负责真正把布局放回去。
+
 ## [0.2.0] - 2026-11-04
 
 ### 修复
@@ -36,6 +51,7 @@
 - 安装包：`desktop-icon-backup_0.1.0_x64-setup.exe`（NSIS，当前用户安装）
 - 便携版：`desktop-icon-backup_0.1.0_portable.exe`
 
+[0.3.0]: https://github.com/qcytkk/win-desktop-icon-backup-manager/releases/tag/v0.3.0
 [0.2.0]: https://github.com/qcytkk/win-desktop-icon-backup-manager/releases/tag/v0.2.0
 [0.1.1]: https://github.com/qcytkk/win-desktop-icon-backup-manager/releases/tag/v0.1.1
 [0.1.0]: https://github.com/qcytkk/win-desktop-icon-backup-manager/releases/tag/v0.1.0

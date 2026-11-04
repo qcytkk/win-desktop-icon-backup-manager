@@ -4,7 +4,7 @@ use std::thread;
 
 use sha1::{Digest, Sha1};
 use windows::core::{GUID, Interface};
-use windows::Win32::Foundation::SIZE;
+use windows::Win32::Foundation::{POINT, SIZE};
 use windows::Win32::Graphics::Gdi::{
     CreateCompatibleDC, DeleteDC, DeleteObject, GetDIBits, GetObjectW, SelectObject, BITMAP,
     BITMAPINFO, BITMAPINFOHEADER, BI_RGB, DIB_RGB_COLORS, HBITMAP, HDC, HGDIOBJ,
@@ -49,6 +49,47 @@ unsafe fn collect_sta(icon_dir: &Path) -> Result<Collected, String> {
         CoUninitialize();
     }
     result
+}
+
+/// 轻量读取当前桌面图标坐标（路径 + 像素坐标），供守护进程校验恢复结果。
+pub fn read_positions() -> Result<Vec<(String, POINT)>, String> {
+    thread::spawn(|| unsafe { read_positions_sta() })
+        .join()
+        .map_err(|_| "读取桌面坐标线程异常".to_string())?
+}
+
+unsafe fn read_positions_sta() -> Result<Vec<(String, POINT)>, String> {
+    let init = CoInitializeEx(None, COINIT_APARTMENTTHREADED);
+    let initialized = init.is_ok();
+
+    let result = read_positions_inner();
+    if initialized {
+        CoUninitialize();
+    }
+    result
+}
+
+unsafe fn read_positions_inner() -> Result<Vec<(String, POINT)>, String> {
+    let view = open_desktop_view()?;
+    let folder_view = &view.folder_view;
+    let count = folder_view
+        .ItemCount(SVGIO_ALLVIEW)
+        .map_err(|e| format!("无法统计桌面图标：{}", e))?;
+
+    let mut out = Vec::with_capacity(count.max(0) as usize);
+    for i in 0..count {
+        let pidl = match folder_view.Item(i) {
+            Ok(p) => p,
+            Err(_) => continue,
+        };
+        let path = pidl_path(&view.desktop, pidl as *const ITEMIDLIST);
+        let position = folder_view.GetItemPosition(pidl);
+        CoTaskMemFree(Some(pidl as *const c_void));
+        if let (Some(path), Ok(position)) = (path, position) {
+            out.push((path, position));
+        }
+    }
+    Ok(out)
 }
 
 pub struct DesktopView {

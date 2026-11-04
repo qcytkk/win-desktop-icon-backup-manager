@@ -1,8 +1,8 @@
 use std::collections::BTreeMap;
 
 use serde::Serialize;
-use winreg::enums::HKEY_CURRENT_USER;
-use winreg::RegKey;
+use winreg::enums::{RegType, HKEY_CURRENT_USER, KEY_SET_VALUE};
+use winreg::{RegKey, RegValue};
 
 const BAGS_PATH: &str = r"Software\Microsoft\Windows\Shell\Bags\1\Desktop";
 
@@ -62,6 +62,20 @@ pub fn icon_layouts_bytes(snapshot: &RegistrySnapshot) -> Result<Vec<u8>, String
         .as_ref()
         .ok_or_else(|| "注册表中没有 IconLayouts".to_string())?;
     hex_to_bytes(hex)
+}
+
+/// 把完整的 IconLayouts 二进制写回桌面布局注册表。
+pub fn write_icon_layouts(bytes: &[u8]) -> Result<(), String> {
+    let hkcu = RegKey::predef(HKEY_CURRENT_USER);
+    let key = hkcu
+        .open_subkey_with_flags(BAGS_PATH, KEY_SET_VALUE)
+        .map_err(|e| format!("无法打开桌面布局注册表：{}", e))?;
+    let value = RegValue {
+        bytes: bytes.to_vec(),
+        vtype: RegType::REG_BINARY,
+    };
+    key.set_raw_value("IconLayouts", &value)
+        .map_err(|e| format!("写入 IconLayouts 失败：{}", e))
 }
 
 fn hex_to_bytes(hex: &str) -> Result<Vec<u8>, String> {

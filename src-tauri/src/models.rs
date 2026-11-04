@@ -64,6 +64,14 @@ pub struct AppSettings {
     pub font_size: String,
     pub storage_mode: String,
     pub custom_path: String,
+    #[serde(default = "default_true")]
+    pub auto_start: bool,
+    #[serde(default = "default_true")]
+    pub context_menu: bool,
+}
+
+fn default_true() -> bool {
+    true
 }
 
 impl Default for AppSettings {
@@ -74,6 +82,8 @@ impl Default for AppSettings {
             font_size: "normal".into(),
             storage_mode: "documents".into(),
             custom_path: String::new(),
+            auto_start: true,
+            context_menu: true,
         }
     }
 }

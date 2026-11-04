@@ -28,7 +28,9 @@ Windows 桌面图标布局的备份、预览与恢复工具，基于 Tauri 2 + R
 - **恢复布局** — 按完整路径 / 系统 CLSID 优先匹配图标，显示名兜底；备份中存在但当前已删除的图标跳过；备份之后新增的图标自动放入桌面空位。
 - **跨分辨率使用布局** — 同缩放模式下可直接把低分辨率布局套用到高分辨率屏幕，坐标不做放大，超出屏幕的坐标自动贴边。
 - **缩放不一致提示** — 当前系统缩放与备份记录不同时，弹窗选择使用当前缩放或备份缩放，仅做本次坐标换算，不修改系统设置。
-- **界面设置** — 白天蓝白 / 黑夜黄黑双主题、6 种界面语言（简中 / 繁中 / 英 / 法 / 韩 / 日）、4 档全局字号、三种备份存储位置（文档目录 / 软件目录 / 自定义），均持久化保存。
+- **开机自启 + 隐藏守护** — 登录后在系统托盘运行，不显示主窗口；刷新率、分辨率或显示模式变化后自动恢复「当前使用中的布局」。
+- **桌面右键菜单** — 桌面空白处右键可直接「备份当前桌面布局」，一键生成新备份。
+- **界面设置** — 白天蓝白 / 黑夜黄黑双主题、6 种界面语言（简中 / 繁中 / 英 / 法 / 韩 / 日）、4 档全局字号、三种备份存储位置（文档目录 / 软件目录 / 自定义），以及开机自启、右键菜单开关，均持久化保存。
 - **无障碍** — 交互控件满足 WCAG AA 对比度，支持键盘操作与读屏器。
 
 ## 下载
@@ -117,7 +119,9 @@ This app records icon names and positions together with resolution, DPI, scale f
 - **Restore layout** — matches icons by full path / system CLSID first and falls back to display name; icons missing from the current desktop are skipped; icons created after the backup are placed into free slots.
 - **Cross-resolution layouts** — within the same scaling mode, a lower-resolution layout can be applied to a higher-resolution display without scaling coordinates; off-screen positions are clamped to the edges.
 - **Scale mismatch dialog** — when the current scale differs from the backup, choose between current and backup scale. Coordinates are converted for this apply only; system settings are never modified.
-- **Settings** — light/dark themes, 6 UI languages (Simplified Chinese, Traditional Chinese, English, French, Korean, Japanese), 4 global font sizes, and three backup storage locations (Documents / App folder / Custom), all persisted.
+- **Start with Windows + hidden guard** — runs in the system tray after sign-in without opening the main window, and restores the active layout after refresh-rate, resolution or display-mode changes.
+- **Desktop context menu** — right-click the desktop background to back up the current layout in one click.
+- **Settings** — light/dark themes, 6 UI languages (Simplified Chinese, Traditional Chinese, English, French, Korean, Japanese), 4 global font sizes, three backup storage locations (Documents / App folder / Custom), plus start-with-Windows and context-menu toggles, all persisted.
 - **Accessibility** — WCAG AA contrast for interactive controls, keyboard operation and screen reader support.
 
 ### Download
