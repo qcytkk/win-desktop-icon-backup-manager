@@ -2,6 +2,12 @@
 
 本项目遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/) 与 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.2.0] - 2026-11-04
+
+### 修复
+
+- **重启 / 关机后桌面恢复成旧布局**：应用布局后调用 `IShellView::SaveViewState()`，把图标坐标和「自动排列图标」开关状态立即写入注册表 `HKCU\Software\Microsoft\Windows\Shell\Bags\1\Desktop\IconLayouts`。此前只修改 Explorer 内存中的图标位置，重启后会重新加载旧布局；现在无需结束或重启 `explorer.exe`，重启、关机后仍保持已应用的布局。
+
 ## [0.1.1] - 2026-11-04
 
 ### 修复
@@ -30,5 +36,6 @@
 - 安装包：`desktop-icon-backup_0.1.0_x64-setup.exe`（NSIS，当前用户安装）
 - 便携版：`desktop-icon-backup_0.1.0_portable.exe`
 
+[0.2.0]: https://github.com/qcytkk/win-desktop-icon-backup-manager/releases/tag/v0.2.0
 [0.1.1]: https://github.com/qcytkk/win-desktop-icon-backup-manager/releases/tag/v0.1.1
 [0.1.0]: https://github.com/qcytkk/win-desktop-icon-backup-manager/releases/tag/v0.1.0

@@ -52,6 +52,7 @@ unsafe fn collect_sta(icon_dir: &Path) -> Result<Collected, String> {
 }
 
 pub struct DesktopView {
+    pub shell_view: IShellView,
     pub folder_view: IFolderView,
     pub desktop: IShellFolder,
 }
@@ -91,7 +92,11 @@ pub unsafe fn open_desktop_view() -> Result<DesktopView, String> {
         .cast()
         .map_err(|e| format!("桌面视图不支持 IFolderView：{}", e))?;
 
-    Ok(DesktopView { folder_view, desktop })
+    Ok(DesktopView {
+        shell_view: view,
+        folder_view,
+        desktop,
+    })
 }
 
 pub unsafe fn pidl_display_name(

@@ -261,6 +261,15 @@ unsafe fn apply_inner(
         return Err(err);
     }
 
+    // SelectAndPositionItems 只更新当前桌面视图的内存状态，必须让 Shell 保存视图状态，
+    // 否则新的坐标不会写入 Bags\1\Desktop\IconLayouts，重启后会恢复成旧布局。
+    if let Err(err) = view.shell_view.SaveViewState() {
+        warnings.push(format!(
+            "布局已应用，但无法写入系统持久化状态，重启后可能恢复原布局：{}",
+            err
+        ));
+    }
+
     Ok(ApplyResult {
         matched,
         missing,
