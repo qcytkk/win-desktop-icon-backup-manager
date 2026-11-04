@@ -8,7 +8,8 @@ import { useSettingsStore } from '../stores/settings'
 import { showToast } from '../toast'
 import type { FontSize, StorageMode, ThemeMode } from '../types'
 
-const emit = defineEmits<{ close: [] }>()
+const props = defineProps<{ guideOpen?: boolean }>()
+const emit = defineEmits<{ close: []; 'open-guide': [] }>()
 const store = useSettingsStore()
 
 const dialogRef = ref<HTMLElement | null>(null)
@@ -99,6 +100,20 @@ async function toggleContextMenu() {
   }
 }
 
+async function toggleGuide() {
+  const next = !store.settings.guide
+  try {
+    await store.persist({ guide: next })
+    showToast(t(next ? 'toast.guideOn' : 'toast.guideOff'))
+  } catch (err) {
+    showToast(t('toast.error', { msg: String(err) }))
+  }
+}
+
+function openGuide() {
+  emit('open-guide')
+}
+
 async function pickFolder(): Promise<string | null> {
   const result = await open({
     directory: true,
@@ -136,6 +151,7 @@ async function changeCustomFolder() {
 }
 
 function handleKey(event: KeyboardEvent) {
+  if (props.guideOpen) return
   if (event.key === 'Tab') {
     trapTab(event, dialogRef.value)
     return
@@ -169,6 +185,15 @@ watch(
   async () => {
     await nextTick()
     updateThumb()
+  }
+)
+
+watch(
+  () => props.guideOpen,
+  async (open) => {
+    if (open) return
+    await nextTick()
+    closeRef.value?.focus()
   }
 )
 
@@ -370,6 +395,28 @@ onUnmounted(() => {
                 :aria-checked="store.settings.contextMenu"
                 :aria-label="t('settings.contextMenuLabel')"
                 @click="toggleContextMenu"
+              >
+                <span class="toggle-knob" aria-hidden="true"></span>
+              </button>
+            </div>
+          </div>
+          <hr class="setting-divider" aria-hidden="true" />
+          <div class="setting-row">
+            <div class="row-label">
+              <b>{{ t('settings.guideLabel') }}</b>
+              <small>{{ t('settings.guideHint') }}</small>
+            </div>
+            <div class="row-control">
+              <button class="placeholder-btn guide-view-btn" type="button" @click="openGuide">
+                {{ t('settings.guideView') }}
+              </button>
+              <button
+                class="toggle-switch"
+                type="button"
+                role="switch"
+                :aria-checked="store.settings.guide"
+                :aria-label="t('settings.guideLabel')"
+                @click="toggleGuide"
               >
                 <span class="toggle-knob" aria-hidden="true"></span>
               </button>

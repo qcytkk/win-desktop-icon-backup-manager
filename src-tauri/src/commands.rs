@@ -121,6 +121,20 @@ fn build_items_from_names(names: &[String]) -> Vec<IconItem> {
 }
 
 #[tauri::command]
+pub fn should_show_guide(app: AppHandle) -> bool {
+    crate::storage::onboarding::should_show(&app)
+}
+
+#[tauri::command]
+pub fn open_desktop_icon_settings() -> Result<(), String> {
+    std::process::Command::new("rundll32.exe")
+        .args(["shell32.dll,Control_RunDLL", "desk.cpl,,0"])
+        .spawn()
+        .map(|_| ())
+        .map_err(|e| format!("无法打开桌面图标设置：{}", e))
+}
+
+#[tauri::command]
 pub fn get_current_display() -> DisplayInfo {
     display::read_display()
 }

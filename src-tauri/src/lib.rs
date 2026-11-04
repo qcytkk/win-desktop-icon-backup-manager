@@ -83,6 +83,8 @@ pub fn run(backup_now: bool, autostart: bool) {
             commands::get_settings,
             commands::save_settings,
             commands::create_backup,
+            commands::should_show_guide,
+            commands::open_desktop_icon_settings,
             commands::get_current_display,
             commands::apply_backup,
             commands::list_backups,

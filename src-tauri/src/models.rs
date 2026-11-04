@@ -68,6 +68,8 @@ pub struct AppSettings {
     pub auto_start: bool,
     #[serde(default = "default_true")]
     pub context_menu: bool,
+    #[serde(default = "default_true")]
+    pub guide: bool,
 }
 
 fn default_true() -> bool {
@@ -84,6 +86,7 @@ impl Default for AppSettings {
             custom_path: String::new(),
             auto_start: true,
             context_menu: true,
+            guide: true,
         }
     }
 }

@@ -2,6 +2,20 @@
 
 本项目遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/) 与 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.4.1] - 2026-11-05
+
+### 变更
+
+- 设置页「查看软件引导」按钮悬停时改为蓝底白字。
+- 引导页在「取消勾选『允许主题更改桌面图标』」下方增加红色提示：「允许主题更改桌面图标」可能是导致图标布局突然变乱的原因。
+
+## [0.4.0] - 2026-11-05
+
+### 新增
+
+- **使用引导页**：开启引导开关时，每次开机后第一次启动软件会弹出使用引导，说明需要取消勾选「允许主题更改桌面图标」，并提供「打开『桌面图标设置』」按钮，直接打开 Windows 桌面图标设置窗口。
+- **软件引导页开关**：设置页「系统集成」新增开关，可关闭引导页。
+
 ## [0.3.1] - 2026-11-05
 
 ### 修复
@@ -57,6 +71,8 @@
 - 安装包：`desktop-icon-backup_0.1.0_x64-setup.exe`（NSIS，当前用户安装）
 - 便携版：`desktop-icon-backup_0.1.0_portable.exe`
 
+[0.4.1]: https://github.com/qcytkk/win-desktop-icon-backup-manager/releases/tag/v0.4.1
+[0.4.0]: https://github.com/qcytkk/win-desktop-icon-backup-manager/releases/tag/v0.4.0
 [0.3.1]: https://github.com/qcytkk/win-desktop-icon-backup-manager/releases/tag/v0.3.1
 [0.3.0]: https://github.com/qcytkk/win-desktop-icon-backup-manager/releases/tag/v0.3.0
 [0.2.0]: https://github.com/qcytkk/win-desktop-icon-backup-manager/releases/tag/v0.2.0

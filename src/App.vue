@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
+import { invoke } from '@tauri-apps/api/core'
 
 import BackupGrid from './components/BackupGrid.vue'
 import BackupList from './components/BackupList.vue'
 import BackupToolbar from './components/BackupToolbar.vue'
 import EmptyState from './components/EmptyState.vue'
+import OnboardingDialog from './components/OnboardingDialog.vue'
 import PreviewDialog from './components/PreviewDialog.vue'
 import SettingsDialog from './components/SettingsDialog.vue'
 import ToastHost from './components/ToastHost.vue'
@@ -19,12 +21,18 @@ const backups = useBackupStore()
 
 const booting = ref(true)
 const showSettings = ref(false)
+const showGuide = ref(false)
 
 async function boot() {
   booting.value = true
   try {
     await settings.init()
     await backups.init()
+    try {
+      showGuide.value = await invoke<boolean>('should_show_guide')
+    } catch {
+      showGuide.value = false
+    }
   } catch (err) {
     showToast(t('toast.error', { msg: String(err) }))
   } finally {
@@ -76,7 +84,13 @@ onMounted(boot)
     </main>
 
     <PreviewDialog v-if="backups.previewId" />
-    <SettingsDialog v-if="showSettings" @close="showSettings = false" />
+    <SettingsDialog
+      v-if="showSettings"
+      :guide-open="showGuide"
+      @close="showSettings = false"
+      @open-guide="showGuide = true"
+    />
+    <OnboardingDialog v-if="showGuide && !booting" @close="showGuide = false" />
     <ToastHost />
   </div>
 </template>

@@ -60,6 +60,7 @@ export interface AppSettings {
   customPath: string
   autoStart: boolean
   contextMenu: boolean
+  guide: boolean
 }
 
 export interface PathsInfo {

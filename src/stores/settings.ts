@@ -12,6 +12,7 @@ const DEFAULTS: AppSettings = {
   customPath: '',
   autoStart: true,
   contextMenu: true,
+  guide: true,
 }
 
 export const useSettingsStore = defineStore('settings', {
@@ -35,6 +36,7 @@ export const useSettingsStore = defineStore('settings', {
         customPath: view.customPath,
         autoStart: view.autoStart,
         contextMenu: view.contextMenu,
+        guide: view.guide,
       }
       this.paths = view.paths
       this.applyAppearance()
