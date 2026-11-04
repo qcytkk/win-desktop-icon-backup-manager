@@ -47,7 +47,7 @@ async function commitEdit() {
 </script>
 
 <template>
-  <article class="card" @click="openPreview">
+  <article class="card">
     <div class="thumb">
       <LayoutThumb :record="record" />
       <span class="res">{{ record.display.width }}×{{ record.display.height }}</span>
@@ -70,7 +70,7 @@ async function commitEdit() {
           @keydown.esc.prevent="cancelEdit"
           @blur="commitEdit"
         />
-        <h3 v-else class="name" @click.stop="openPreview">{{ record.name }}</h3>
+        <h3 v-else class="name">{{ record.name }}</h3>
         <button
           class="icon-btn"
           type="button"

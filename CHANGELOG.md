@@ -2,6 +2,13 @@
 
 本项目遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/) 与 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.1.1] - 2026-11-04
+
+### 修复
+
+- **备份卡片 / 列表行误触预览**：点击卡片或整行任意位置不再打开预览弹窗，恢复为仅点击「预览布局」按钮时打开。
+- **设置页选中态不可见**：字体大小与备份存储位置的当前选项改为品牌色高亮（深色主题为金色），滑块指示器改用 `getBoundingClientRect` 精确定位。
+
 ## [0.1.0] - 2026-11-04
 
 首个可发布版本，实现桌面图标布局「备份 → 管理 → 预览 → 恢复」的完整闭环。
@@ -20,7 +27,8 @@
 
 ### 发布产物
 
-- 安装包：`桌面图标备份_0.1.0_x64-setup.exe`（NSIS，当前用户安装）
-- 便携版：`桌面图标备份.exe`
+- 安装包：`desktop-icon-backup_0.1.0_x64-setup.exe`（NSIS，当前用户安装）
+- 便携版：`desktop-icon-backup_0.1.0_portable.exe`
 
+[0.1.1]: https://github.com/qcytkk/win-desktop-icon-backup-manager/releases/tag/v0.1.1
 [0.1.0]: https://github.com/qcytkk/win-desktop-icon-backup-manager/releases/tag/v0.1.0

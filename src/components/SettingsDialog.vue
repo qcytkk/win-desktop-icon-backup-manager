@@ -38,8 +38,11 @@ function updateThumb() {
   if (!root) return
   const active = root.querySelector<HTMLElement>('.switch-opt[aria-checked="true"]')
   if (!active) return
-  thumbStyle.left = `${active.offsetLeft - root.clientLeft}px`
-  thumbStyle.width = `${active.offsetWidth}px`
+  const rootRect = root.getBoundingClientRect()
+  const activeRect = active.getBoundingClientRect()
+  if (!activeRect.width) return
+  thumbStyle.left = `${activeRect.left - rootRect.left - root.clientLeft}px`
+  thumbStyle.width = `${activeRect.width}px`
 }
 
 async function changeTheme(theme: ThemeMode) {

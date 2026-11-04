@@ -573,7 +573,7 @@ h1 {
   background: var(--surface-2);
   border-bottom: 1px solid var(--line);
   overflow: hidden;
-  cursor: pointer;
+  cursor: default;
 }
 
 .mini {
@@ -672,7 +672,7 @@ h1 {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  cursor: pointer;
+  cursor: default;
 }
 
 .meta {
@@ -1456,9 +1456,13 @@ h1 {
 }
 
 .font-opt.active {
-  background: var(--surface);
-  color: var(--ink);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  background: var(--brand);
+  color: var(--on-brand);
+  box-shadow: none;
+}
+
+.font-opt.active:hover {
+  color: var(--on-brand);
 }
 
 .storage-switch {
@@ -1481,8 +1485,7 @@ h1 {
   width: 0;
   height: calc(100% - 4px);
   border-radius: 6px;
-  background: var(--surface);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  background: var(--brand);
   pointer-events: none;
   transition: left 0.18s ease, width 0.18s ease;
 }
@@ -1503,9 +1506,13 @@ h1 {
   transition: color 0.14s;
 }
 
-.switch-opt:hover,
-.switch-opt[aria-checked='true'] {
+.switch-opt:hover {
   color: var(--ink);
+}
+
+.switch-opt[aria-checked='true'],
+.switch-opt[aria-checked='true']:hover {
+  color: var(--on-brand);
 }
 
 .storage-path {

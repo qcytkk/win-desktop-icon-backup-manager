@@ -47,7 +47,7 @@ async function commitEdit() {
 </script>
 
 <template>
-  <div class="row" @click="openPreview">
+  <div class="row">
     <div class="mini-wrap">
       <LayoutThumb :record="record" />
     </div>
