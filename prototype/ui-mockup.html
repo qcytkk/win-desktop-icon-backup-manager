@@ -1,0 +1,2140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="light dark" />
+<title>桌面图标布局备份管理 · UI 样板</title>
+<style>
+  :root{
+    color-scheme:light;
+    --page-bg:#E8EDF4;
+    --app-bg:#E8EBF0;
+    --chrome:#F8F9FB;
+    --surface:#FFFFFF;
+    --surface-2:#F3F5F8;
+    --surface-3:#E5E9EF;
+    --ink:#18202B;
+    --ink-2:#48525F;
+    --ink-3:#616B79;
+    --line:#D5DBE4;
+    --line-strong:#BFC8D4;
+    --brand:#1A5FBF;
+    --brand-hover:#144C9C;
+    --brand-soft:#E6EFFC;
+    --brand-ink:#0D3A73;
+    --brand-soft-border:#C9DAF2;
+    --on-brand:#FFFFFF;
+    --on-brand-soft:rgba(255,255,255,.35);
+    --ok:#147A43;
+    --ok-bg:#147A43;
+    --ok-border:#0E6337;
+    --danger:#B3261E;
+    --danger-text:#B3261E;
+    --chip-bg:rgba(251,252,254,.86);
+    --fade-1:rgba(255,255,255,.96);
+    --fade-2:rgba(255,255,255,.74);
+    --mini-dot:rgba(27,28,26,.06);
+    --desktop-bg:#E9EEF5;
+    --desktop-dot:rgba(27,28,26,.1);
+    --desktop-label:#2C3542;
+    --desktop-label-shadow:rgba(255,255,255,.65);
+    --scrollbar:#BCC6D4;
+    --focus-halo:rgba(26,95,191,.14);
+    --fs-aux:14px;
+    --fs-body:16px;
+    --fs-title:18px;
+    --fs-display:22px;
+    --fs-preview-label:12px;
+    --fs-icon:11px;
+    --lh-aux:1.5;
+    --lh-body:1.45;
+    --lh-title:1.35;
+    --lh-display:1.25;
+    --radius:10px;
+    --font-display:"Segoe UI Variable Display","Segoe UI","Microsoft YaHei UI",system-ui,sans-serif;
+    --font-text:"Segoe UI Variable Text","Segoe UI","Microsoft YaHei UI",system-ui,sans-serif;
+    --font-mono:"Cascadia Mono","Cascadia Code",Consolas,monospace;
+  }
+  :root[data-theme="dark"]{
+    color-scheme:dark;
+    --page-bg:#0B0B0D;
+    --app-bg:#0C0C0E;
+    --chrome:#141416;
+    --surface:#1A1A1C;
+    --surface-2:#232326;
+    --surface-3:#2E2E32;
+    --ink:#F3EFE4;
+    --ink-2:#CFC8B8;
+    --ink-3:#A39C8B;
+    --line:#33332E;
+    --line-strong:#48483F;
+    --brand:#E8B53A;
+    --brand-hover:#F2C55A;
+    --brand-soft:#3A2F10;
+    --brand-ink:#F5E3A8;
+    --brand-soft-border:#6B5518;
+    --on-brand:#1A1305;
+    --on-brand-soft:rgba(26,19,5,.35);
+    --ok:#5BD08E;
+    --ok-bg:#147A43;
+    --ok-border:#0E6337;
+    --danger:#B3261E;
+    --danger-text:#FF8F8A;
+    --chip-bg:rgba(26,26,28,.86);
+    --fade-1:rgba(26,26,28,.96);
+    --fade-2:rgba(26,26,28,.72);
+    --mini-dot:rgba(240,235,220,.08);
+    --desktop-bg:#18181B;
+    --desktop-dot:rgba(240,235,220,.12);
+    --desktop-label:#E9E4D6;
+    --desktop-label-shadow:rgba(0,0,0,.55);
+    --scrollbar:#3A3A3E;
+    --focus-halo:rgba(232,181,58,.18);
+  }
+  :root[data-font-size="small"]{
+    --fs-aux:12px;
+    --fs-body:14px;
+    --fs-title:16px;
+    --fs-display:20px;
+  }
+  :root[data-font-size="large"]{
+    --fs-aux:16px;
+    --fs-body:18px;
+    --fs-title:20px;
+    --fs-display:24px;
+  }
+  :root[data-font-size="xlarge"]{
+    --fs-aux:18px;
+    --fs-body:20px;
+    --fs-title:22px;
+    --fs-display:26px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+    padding:24px;
+    background:var(--page-bg);
+    color:var(--ink);
+    font-family:var(--font-text);
+    -webkit-font-smoothing:antialiased;
+  }
+  button{font-family:inherit}
+  :focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+
+  .app{
+    width:min(1180px,96vw);
+    height:min(820px,90vh);
+    display:flex;flex-direction:column;
+    background:var(--chrome);
+    border:1px solid var(--line-strong);
+    border-radius:14px;
+    box-shadow:0 32px 90px rgba(28,28,24,.24),0 2px 6px rgba(28,28,24,.12);
+    overflow:hidden;
+  }
+
+  /* ---------- 标题栏 ---------- */
+  .titlebar{
+    flex:none;height:44px;display:flex;align-items:center;gap:10px;
+    padding-left:14px;border-bottom:1px solid var(--line);background:var(--chrome);
+    user-select:none;
+  }
+  .mark{
+    width:20px;height:20px;border-radius:6px;background:var(--brand-soft);
+    border:1px solid var(--brand-soft-border);padding:4px;
+    display:grid;grid-template-columns:1fr 1fr;gap:2px;
+  }
+  .mark i{display:block;border-radius:2px;background:var(--brand)}
+  .mark i:nth-child(2),.mark i:nth-child(3){background:color-mix(in srgb, var(--brand) 55%, var(--surface))}
+  .app-title{font:600 var(--fs-title)/var(--lh-title) var(--font-display);letter-spacing:.01em}
+  .app-sub{font:400 var(--fs-aux)/1.2 var(--font-mono);color:var(--ink-3);letter-spacing:.12em;text-transform:uppercase;margin-left:2px}
+  .titlebar-actions{margin-left:auto;display:flex;align-items:center;padding-right:8px}
+  .win-controls{display:flex;height:100%}
+  .win-controls button{
+    width:46px;height:100%;border:0;background:transparent;color:var(--ink-2);
+    display:grid;place-items:center;cursor:default;
+  }
+  .win-controls button:hover{background:var(--surface-3)}
+  .win-controls button.close:hover{background:var(--danger);color:#fff}
+  .win-controls svg{width:10px;height:10px;stroke:currentColor;stroke-width:1.4;fill:none}
+
+  /* ---------- 工具栏 ---------- */
+  .toolbar{
+    flex:none;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;
+    flex-wrap:wrap;
+    padding:20px 22px 16px;border-bottom:1px solid var(--line);
+  }
+  .h-row{display:flex;align-items:center;gap:9px}
+  h1{margin:0;font:600 var(--fs-display)/var(--lh-display) var(--font-display);letter-spacing:-.015em}
+  .count{font:500 var(--fs-aux)/1 var(--font-mono);background:var(--surface-2);border:1px solid var(--line);color:var(--ink-2);border-radius:5px;padding:3px 6px}
+  .sub{margin:8px 0 0;font:400 var(--fs-aux)/var(--lh-aux) var(--font-text);color:var(--ink-2)}
+  .sub b{font-weight:600;color:var(--ink);font-family:var(--font-mono);letter-spacing:.01em}
+  .actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+
+  .btn-primary{
+    height:36px;padding:0 14px 0 12px;display:inline-flex;align-items:center;gap:7px;
+    border:1px solid var(--brand-hover);border-radius:8px;background:var(--brand);color:var(--on-brand);
+    font:500 var(--fs-body)/1 var(--font-text);cursor:pointer;
+    box-shadow:0 1px 2px rgba(0,0,0,.14);
+    transition:background .15s,transform .12s;
+  }
+  .btn-primary:hover{background:var(--brand-hover)}
+  .btn-primary:active{transform:translateY(1px)}
+  .btn-primary:focus-visible{outline:2px solid var(--on-brand);outline-offset:-4px;box-shadow:0 0 0 3px var(--brand-hover)}
+  .btn-primary:disabled{opacity:.78;cursor:default}
+  #pvUse:disabled{opacity:1;background:var(--ok-bg);border-color:var(--ok-border);color:#fff;cursor:default}
+  .btn-primary svg{width:14px;height:14px;stroke:currentColor;stroke-width:1.5;fill:none}
+  .btn-primary .spinner{display:none;width:13px;height:13px;border-radius:50%;border:2px solid var(--on-brand-soft);border-top-color:var(--on-brand);animation:spin .7s linear infinite}
+  .btn-primary.loading .spinner{display:block}
+  .btn-primary.loading svg{display:none}
+  .btn-sm{height:32px;padding:0 12px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .seg{
+    display:inline-flex;align-items:center;height:36px;padding:2px;
+    background:var(--surface-2);border:1px solid var(--line-strong);border-radius:8px;
+  }
+  .seg button{
+    display:inline-flex;align-items:center;justify-content:center;gap:4px;
+    height:30px;min-width:56px;padding:0 12px;border:0;border-radius:0;
+    background:none;color:var(--ink-2);
+    font:500 var(--fs-body)/1 var(--font-text);cursor:pointer;
+    transition:background .2s ease,color .2s ease,box-shadow .2s ease;
+  }
+  .seg button:first-child{border-radius:8px 0 0 8px}
+  .seg button:last-child{border-radius:0 8px 8px 0}
+  .seg button:hover{box-shadow:inset 0 0 0 1px var(--brand);color:var(--brand-ink)}
+  .seg button[aria-pressed="true"]{background:var(--brand);color:var(--on-brand);box-shadow:none}
+  .seg button[aria-pressed="true"]:hover{box-shadow:none;color:var(--on-brand)}
+  .seg button[aria-pressed="true"]:focus-visible{outline:2px solid var(--on-brand);outline-offset:-4px}
+  .seg svg{width:14px;height:14px;stroke:currentColor;stroke-width:1.5;fill:none}
+
+  /* ---------- 排序胶囊组合控件 ---------- */
+  .pill-group{display:inline-flex;align-items:stretch;height:36px;--r:8px;background:var(--surface)}
+  .pill-group > *{
+    display:flex;align-items:center;height:100%;position:relative;
+    font:500 var(--fs-body)/1 var(--font-text);color:var(--ink);
+    background:var(--surface);border:1px solid var(--brand);
+  }
+  .pill-group > * + *{margin-left:-1px}
+  .pill-group > *:first-child{border-radius:var(--r) 0 0 var(--r)}
+  .pill-group > *:last-child{border-radius:0 var(--r) var(--r) 0}
+  .group-label{padding:0 14px;color:var(--ink-2);white-space:nowrap}
+  .dd-trigger{
+    gap:6px;padding:0 14px;border-radius:0;background:transparent;
+    cursor:pointer;transition:background .12s ease;
+  }
+  .dd-trigger:hover{background:var(--brand-soft)}
+  .dd-trigger .dd-value,.dd-trigger .arrow{transition:color .12s ease,transform .18s ease}
+  .dd-trigger:hover .dd-value,.dd-trigger:hover .arrow,
+  .dd-trigger:focus-visible .dd-value,.dd-trigger:focus-visible .arrow,
+  .dd-trigger[aria-expanded="true"] .dd-value,.dd-trigger[aria-expanded="true"] .arrow{color:var(--brand)}
+  .dd-trigger[aria-expanded="true"] .arrow{transform:rotate(180deg)}
+  .dd-trigger svg{width:14px;height:14px;stroke:currentColor;stroke-width:1.5;fill:none}
+  .dir-btn{
+    justify-content:center;width:34px;padding:0;border-color:var(--brand);
+    background:var(--brand);color:var(--on-brand);cursor:pointer;transition:background .12s ease;
+  }
+  .dir-btn:hover{background:var(--brand-hover);border-color:var(--brand-hover)}
+  .dir-btn:focus-visible{outline:2px solid var(--on-brand);outline-offset:-4px;box-shadow:0 0 0 2px var(--brand-hover)}
+  .dir-btn svg{width:14px;height:14px;stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+  .dd-mask{position:fixed;inset:0;z-index:90}
+  .dd-menu{
+    position:fixed;z-index:100;min-width:168px;padding:4px;
+    background:var(--surface);border:1px solid var(--line-strong);border-radius:8px;
+    box-shadow:0 12px 32px rgba(24,32,43,.18);
+  }
+  .dd-item{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;
+    min-height:32px;padding:8px 12px;border:0;border-radius:8px;background:transparent;
+    color:var(--ink);font:500 var(--fs-body)/1.35 var(--font-text);text-align:left;cursor:pointer;
+  }
+  .dd-item:hover{background:var(--brand);color:var(--on-brand)}
+  .dd-item.selected{background:var(--brand-soft);color:var(--brand-ink);font-weight:500}
+  .dd-item .tick{font:500 var(--fs-aux)/1 var(--font-text);opacity:0}
+  .dd-item.selected .tick{opacity:1}
+  .sr-only{
+    position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+    overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
+  }
+
+  /* ---------- 内容区 ---------- */
+  .content{flex:1;min-height:0;overflow:auto;padding:20px 22px 26px;background:var(--app-bg)}
+  .content.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(288px,1fr));gap:16px;align-content:start}
+  .content.list{display:block}
+  .content::-webkit-scrollbar{width:10px}
+  .content::-webkit-scrollbar-thumb{background:var(--scrollbar);border-radius:8px;border:3px solid var(--app-bg)}
+
+  /* ---------- 卡片 ---------- */
+  .card{
+    border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);
+    overflow:hidden;cursor:default;
+    box-shadow:0 1px 2px rgba(24,32,43,.06);
+    transition:transform .16s ease,box-shadow .16s ease,border-color .16s;
+  }
+  .card:hover{transform:translateY(-2px);border-color:var(--line-strong);box-shadow:0 10px 24px rgba(30,38,50,.12)}
+  .thumb{position:relative;aspect-ratio:16/9;background:var(--surface-2);border-bottom:1px solid var(--line);overflow:hidden}
+  .mini{
+    position:absolute;inset:0;
+    background-image:radial-gradient(var(--mini-dot) 1px,transparent 1px);
+    background-size:14px 14px;
+  }
+  .mini .di{position:absolute;width:5px;height:5px;border-radius:1.5px}
+  .badge{
+    position:absolute;top:8px;left:8px;z-index:2;
+    font:500 var(--fs-aux)/1 var(--font-text);padding:4px 7px;border-radius:5px;
+    background:var(--ok-bg);color:#fff;border:1px solid var(--ok-border);
+    box-shadow:0 1px 3px rgba(15,60,35,.18);
+  }
+  .res{
+    position:absolute;top:8px;right:8px;z-index:2;
+    font:400 var(--fs-aux)/1 var(--font-mono);letter-spacing:.02em;padding:4px 6px;border-radius:5px;
+    background:var(--chip-bg);border:1px solid var(--line);color:var(--ink-2);
+    backdrop-filter:blur(2px);
+  }
+  .thumb-actions{
+    position:absolute;left:0;right:0;bottom:0;z-index:3;
+    display:flex;justify-content:center;gap:8px;
+    padding:22px 10px 10px;
+    background:linear-gradient(to top,var(--fade-1) 0%,var(--fade-2) 58%,transparent 100%);
+    opacity:0;transform:translateY(6px);pointer-events:none;
+    transition:opacity .16s,transform .16s;
+  }
+  .card:hover .thumb-actions,.card:focus-within .thumb-actions{opacity:1;transform:none;pointer-events:auto}
+  .tbtn{
+    min-height:28px;padding:6px 12px;border:1px solid var(--line-strong);border-radius:8px;
+    background:var(--surface);color:var(--brand);
+    font:500 var(--fs-body)/1 var(--font-text);cursor:pointer;white-space:nowrap;
+    box-shadow:0 2px 6px rgba(24,32,43,.08);
+    transition:background .14s,color .14s,border-color .14s,box-shadow .14s;
+  }
+  .tbtn:hover{background:var(--brand);border-color:var(--brand);color:var(--on-brand);box-shadow:0 3px 10px rgba(0,0,0,.18)}
+  .tbtn.use{background:var(--brand-soft);border-color:var(--brand-soft-border);color:var(--brand-ink)}
+  .tbtn.use:hover{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+  .tbtn.use.is-current,.tbtn.use.is-current:hover{
+    background:var(--ok-bg);border-color:var(--ok-border);color:#fff;cursor:default;
+    box-shadow:0 2px 6px rgba(15,60,35,.18);
+  }
+  .card-body{padding:11px 13px 13px}
+  .name-row{display:flex;align-items:center;gap:4px}
+  .name{
+    margin:0;flex:1;min-width:0;
+    font:600 var(--fs-title)/var(--lh-title) var(--font-display);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .meta{margin:6px 0 0;display:flex;align-items:center;gap:6px;font:400 var(--fs-aux)/1.3 var(--font-mono);color:var(--ink-3);letter-spacing:.01em}
+  .meta .sep{color:var(--line-strong);font-style:normal}
+
+  .icon-btn{
+    flex:none;width:28px;height:28px;border:1px solid var(--ink);border-radius:8px;
+    background:var(--surface);color:var(--ink);
+    display:grid;place-items:center;cursor:pointer;
+    transition:background .15s,border-color .15s,color .15s;
+  }
+  .icon-btn svg{width:13px;height:13px;stroke:currentColor;stroke-width:1.4;fill:none}
+  #settingsBtn{border:0;background:transparent;color:var(--ink-2);border-radius:8px}
+  #settingsBtn:hover{background:var(--brand);color:var(--on-brand)}
+  #settingsBtn svg{width:15px;height:15px;stroke-width:1.5}
+  .icon-btn:hover{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+  .icon-btn:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+
+  /* ---------- 列表 ---------- */
+  .list-head,.row{
+    display:grid;grid-template-columns:96px minmax(160px,1fr) 120px 140px 70px calc(var(--fs-body) * 9 + 52px);
+    align-items:center;gap:12px;padding:0 10px;
+  }
+  .list-head{
+    height:34px;font:500 var(--fs-aux)/1.2 var(--font-text);color:var(--ink-2);
+    border:1px solid var(--line);border-bottom:0;border-radius:10px 10px 0 0;
+    background:var(--surface);position:sticky;top:0;z-index:1;
+  }
+  .row{
+    height:64px;border-bottom:1px solid var(--line);border-left:1px solid var(--line);border-right:1px solid var(--line);
+    background:var(--surface);cursor:default;transition:background .12s;
+  }
+  .row:last-child{border-radius:0 0 10px 10px}
+  .row:hover{background:var(--surface-2)}
+  .mini-wrap{width:96px;height:54px;border:1px solid var(--line);border-radius:7px;overflow:hidden;position:relative;background:var(--surface-2)}
+  .row .mini .di{width:2.5px;height:2.5px;border-radius:1px}
+  .cell-name{display:flex;align-items:center;gap:4px;min-width:0}
+  .cell-time,.cell-res{font:400 var(--fs-aux)/1.3 var(--font-mono);color:var(--ink-2)}
+  .cell-count{font:400 var(--fs-aux)/1.3 var(--font-mono);color:var(--ink-3)}
+  .list-head span:last-child{text-align:right}
+  .row-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px}
+  .row-open,.row-use{
+    min-height:28px;padding:6px 9px;border-radius:8px;border:1px solid var(--line-strong);
+    font:500 var(--fs-body)/1 var(--font-text);cursor:pointer;white-space:nowrap;
+    transition:background .15s,color .15s,border-color .15s;
+  }
+  .row-open{background:transparent;color:var(--ink-2)}
+  .row-open:hover{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+  .row-use{background:var(--brand-soft);border-color:var(--brand-soft-border);color:var(--brand-ink)}
+  .row-use:hover{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+  .row-use.is-current,.row-use.is-current:hover{
+    background:var(--ok-bg);border-color:var(--ok-border);color:#fff;cursor:default;
+  }
+
+  .name-input{
+    width:100%;min-width:0;border:1px solid var(--brand);border-radius:8px;background:var(--surface);color:var(--ink);
+    font:600 var(--fs-title)/var(--lh-title) var(--font-display);padding:3px 6px;outline:none;
+    box-shadow:0 0 0 3px var(--focus-halo);
+  }
+
+  /* ---------- 预览弹窗 ---------- */
+  .overlay{
+    position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:24px;
+    background:rgba(24,25,23,.48);
+    visibility:hidden;opacity:0;pointer-events:none;
+    transition:opacity .18s,visibility 0s .18s;
+  }
+  .overlay.open{visibility:visible;opacity:1;pointer-events:auto;transition:opacity .18s,visibility 0s 0s}
+  .dialog{
+    width:min(1120px,96vw);max-height:92vh;display:flex;flex-direction:column;
+    background:var(--surface);border:1px solid var(--line-strong);border-radius:14px;
+    box-shadow:0 40px 100px rgba(0,0,0,.34);overflow:hidden;
+    transform:translateY(10px) scale(.985);transition:transform .2s cubic-bezier(.2,.8,.2,1);
+  }
+  .overlay.open .dialog{transform:none}
+  .dlg-head{
+    flex:none;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
+    padding:18px 20px 14px;border-bottom:1px solid var(--line);
+  }
+  .dlg-title-row{display:flex;align-items:center;gap:6px}
+  .dlg-actions{display:flex;align-items:center;gap:10px;flex:none}
+  .dlg-title-row h2{margin:0;font:600 var(--fs-title)/var(--lh-title) var(--font-display);letter-spacing:-.01em}
+  .dlg-meta{margin:7px 0 0;font:400 var(--fs-aux)/var(--lh-aux) var(--font-mono);color:var(--ink-2);letter-spacing:.01em}
+  .dlg-head .icon-btn{margin-top:1px}
+  .close-btn{
+    width:30px;height:30px;border:1px solid var(--line);border-radius:8px;background:var(--surface);
+    color:var(--ink-2);display:grid;place-items:center;cursor:pointer;transition:background .12s,color .12s;
+  }
+  .close-btn:hover{background:var(--danger);border-color:var(--danger);color:#fff}
+  .close-btn svg{width:11px;height:11px;stroke:currentColor;stroke-width:1.5;fill:none}
+
+  .dlg-body{display:flex;flex:1;flex-direction:column;gap:10px;min-height:0;overflow:auto;padding:18px 20px 14px;background:var(--surface-2)}
+  .desktop{
+    position:relative;margin:0 auto;
+    width:min(100%,calc((92vh - 266px) * var(--ar)));
+    aspect-ratio:var(--ar);
+    border:1px solid var(--line-strong);border-radius:10px;
+    background-color:var(--desktop-bg);
+    background-image:radial-gradient(var(--desktop-dot) 1px,transparent 1px);
+    background-size:18px 18px;
+    overflow:hidden;
+    box-shadow:inset 0 0 0 1px var(--line);
+  }
+  .desktop .di{position:absolute;width:26px;height:26px}
+  .desktop .tile{
+    width:26px;height:26px;border-radius:6px;display:grid;place-items:center;
+    color:#fff;font:600 var(--fs-icon)/1 var(--font-display);
+    box-shadow:0 1px 2px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.22);
+  }
+  .desktop .dlabel{
+    position:absolute;top:29px;left:50%;transform:translateX(-50%);width:80px;
+    text-align:center;font:400 var(--fs-preview-label)/1.3 var(--font-text);color:var(--desktop-label);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    text-shadow:0 1px 0 var(--desktop-label-shadow);
+  }
+  .desktop .di:hover .tile{outline:2px solid var(--brand);outline-offset:1px}
+  .dlg-foot{margin:0;text-align:right;font:400 var(--fs-aux)/var(--lh-aux) var(--font-mono);color:var(--ink-3);letter-spacing:.02em}
+
+  .dlg-foot-bar{
+    flex:none;display:flex;align-items:center;justify-content:flex-end;gap:12px;
+    padding:12px 20px;border-top:1px solid var(--line);background:var(--surface);
+  }
+  .btn-danger-ghost,.btn-ghost,.btn-danger{
+    height:32px;padding:0 12px;border-radius:8px;
+    font:500 var(--fs-body)/1 var(--font-text);cursor:pointer;
+  }
+  .btn-danger-ghost{border:1px solid var(--danger-text);background:transparent;color:var(--danger-text);transition:background .14s,color .14s,border-color .14s}
+  .btn-danger-ghost:hover{background:var(--danger);border-color:var(--danger);color:#fff}
+  .btn-ghost{border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);transition:background .14s,border-color .14s,color .14s}
+  .btn-ghost:hover{background:transparent;border-color:var(--ok);color:var(--ok)}
+  .btn-danger{border:1px solid var(--danger);background:var(--danger);color:#fff;transition:background .14s,border-color .14s}
+  .btn-danger:hover{background:#942017;border-color:#942017}
+  .btn-danger:focus-visible{outline:2px solid #fff;outline-offset:-4px;box-shadow:0 0 0 2px var(--danger)}
+
+  .confirm-overlay{
+    position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;padding:24px;
+    background:rgba(16,20,28,.44);
+    visibility:hidden;opacity:0;pointer-events:none;
+    transition:opacity .16s,visibility 0s .16s;
+  }
+  .confirm-overlay.open{visibility:visible;opacity:1;pointer-events:auto;transition:opacity .16s,visibility 0s 0s}
+  .confirm-dialog{
+    width:min(400px,92vw);padding:20px;
+    background:var(--surface);border:1px solid var(--line-strong);border-radius:12px;
+    box-shadow:0 24px 64px rgba(16,20,28,.28);
+  }
+  .confirm-title{margin:0;font:600 var(--fs-title)/var(--lh-title) var(--font-display)}
+  .confirm-text{margin:8px 0 0;font:400 var(--fs-body)/var(--lh-body) var(--font-text);color:var(--ink-2)}
+  .confirm-text b{color:var(--ink);font-weight:600}
+  .confirm-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+
+  /* ---------- 设置弹窗 ---------- */
+  .settings-overlay{
+    position:fixed;inset:0;z-index:25;display:flex;align-items:center;justify-content:center;padding:24px;
+    background:rgba(16,20,28,.44);
+    visibility:hidden;opacity:0;pointer-events:none;
+    transition:opacity .16s,visibility 0s .16s;
+  }
+  .settings-overlay.open{visibility:visible;opacity:1;pointer-events:auto;transition:opacity .16s,visibility 0s 0s}
+  .settings-dialog{
+    width:min(1000px,94vw);max-height:92vh;display:flex;flex-direction:column;overflow:hidden;
+    background:var(--surface);border:1px solid var(--line-strong);border-radius:12px;
+    box-shadow:0 24px 64px rgba(0,0,0,.3);
+  }
+  .settings-head{
+    flex:none;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
+    padding:20px 24px 16px;border-bottom:1px solid var(--line);
+  }
+  .settings-title{margin:0;font:600 var(--fs-title)/var(--lh-title) var(--font-display)}
+  .settings-body{flex:1;min-height:0;overflow:auto}
+  .settings-section{padding:18px 24px;border-bottom:1px solid var(--line)}
+  .settings-section:last-child{border-bottom:0}
+  .section-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .section-head h3{margin:0;font:600 var(--fs-title)/var(--lh-title) var(--font-display);color:var(--ink)}
+  .section-head p{margin:0;font:400 var(--fs-aux)/var(--lh-aux) var(--font-text);color:var(--ink-3)}
+  .soon{
+    flex:none;padding:3px 7px;border-radius:999px;
+    background:var(--brand-soft);color:var(--brand-ink);border:1px solid var(--brand-soft-border);
+    font:500 var(--fs-aux)/1 var(--font-text);
+  }
+  .setting-row{display:flex;align-items:center;justify-content:space-between;gap:24px}
+  .row-label{min-width:0}
+  .row-label b{display:block;font:500 var(--fs-body)/var(--lh-body) var(--font-text);color:var(--ink)}
+  .row-label small{display:block;margin-top:3px;font:400 var(--fs-aux)/var(--lh-aux) var(--font-text);color:var(--ink-3)}
+  .row-control{display:flex;align-items:center;gap:10px;min-width:0}
+
+  .placeholder-btn{
+    min-height:calc(var(--fs-body) + 16px);padding:0 12px;border:1px solid var(--line-strong);border-radius:8px;
+    background:var(--surface-2);color:var(--ink-2);display:inline-flex;align-items:center;
+    font:500 var(--fs-body)/1 var(--font-text);cursor:default;
+  }
+  .placeholder-btn:disabled{opacity:1}
+  .select-wrap{position:relative;display:inline-flex;align-items:center}
+  .select-wrap select{
+    appearance:none;-webkit-appearance:none;
+    height:calc(var(--fs-body) + 18px);min-width:180px;padding:0 34px 0 12px;
+    border:1px solid var(--line-strong);border-radius:8px;
+    background:var(--surface-2);color:var(--ink);
+    font:500 var(--fs-body)/1 var(--font-text);cursor:pointer;outline:none;
+  }
+  .select-wrap select:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+  .select-wrap .chev{position:absolute;right:11px;pointer-events:none;width:12px;height:12px;stroke:var(--ink-2);stroke-width:1.5;fill:none}
+  .path-value{
+    max-width:340px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;
+    background:var(--surface-2);color:var(--ink-2);
+    font:400 var(--fs-aux)/1.3 var(--font-mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .font-options{display:inline-flex;padding:2px;border:1px solid var(--line-strong);border-radius:8px;background:var(--surface-2)}
+  .font-opt{
+    height:calc(var(--fs-body) + 12px);min-width:64px;padding:0 12px;border:0;border-radius:6px;background:transparent;
+    color:var(--ink-2);font:500 var(--fs-body)/1 var(--font-text);cursor:pointer;
+    transition:background .14s,color .14s;
+  }
+  .font-opt:hover{color:var(--ink)}
+  .font-opt.active{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+
+  .storage-switch{
+    position:relative;display:inline-flex;align-items:stretch;width:fit-content;max-width:100%;
+    height:calc(var(--fs-body) + 20px);padding:2px;
+    border:1px solid var(--line-strong);border-radius:8px;background:var(--surface-2);
+  }
+  .switch-thumb{
+    position:absolute;top:2px;left:2px;
+    width:0;height:calc(100% - 4px);
+    border-radius:6px;background:var(--surface);
+    box-shadow:0 1px 2px rgba(0,0,0,.08);
+    pointer-events:none;transition:left .18s ease,width .18s ease;
+  }
+  .switch-opt{
+    position:relative;z-index:1;flex:0 0 auto;height:100%;padding:0 14px;
+    border:0;border-radius:6px;background:transparent;
+    color:var(--ink-2);font:500 var(--fs-body)/1 var(--font-text);cursor:pointer;
+    white-space:nowrap;transition:color .14s;
+  }
+  .switch-opt:hover,.switch-opt[aria-checked="true"]{color:var(--ink)}
+  .storage-path{margin-top:14px}
+  .storage-path-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .storage-path-label{font:500 var(--fs-body)/var(--lh-body) var(--font-text);color:var(--ink)}
+  .storage-path-hint{font:400 var(--fs-aux)/var(--lh-aux) var(--font-text);color:var(--ink-3)}
+  .storage-path-row{display:flex;align-items:center;gap:10px;margin-top:10px}
+  .path-input{
+    flex:1;min-width:0;height:calc(var(--fs-body) + 18px);padding:0 12px;
+    border:1px solid var(--line-strong);border-radius:8px;
+    background:var(--surface-2);color:var(--ink-2);
+    font:500 var(--fs-aux)/1 var(--font-mono);outline:none;
+  }
+  .path-input:not([readonly]){background:var(--surface);color:var(--ink);cursor:text}
+  .path-input:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+  .storage-change[hidden]{display:none}
+
+  .picker-overlay{
+    position:fixed;inset:0;z-index:28;display:flex;align-items:center;justify-content:center;padding:24px;
+    background:rgba(16,20,28,.44);
+    visibility:hidden;opacity:0;pointer-events:none;
+    transition:opacity .16s,visibility 0s .16s;
+  }
+  .picker-overlay.open{visibility:visible;opacity:1;pointer-events:auto;transition:opacity .16s,visibility 0s 0s}
+  .picker-dialog{
+    width:min(520px,94vw);overflow:hidden;
+    background:var(--surface);border:1px solid var(--line-strong);border-radius:12px;
+    box-shadow:0 24px 64px rgba(0,0,0,.3);
+  }
+  .picker-head{padding:18px 20px 12px;border-bottom:1px solid var(--line)}
+  .picker-title{margin:0;font:600 var(--fs-title)/var(--lh-title) var(--font-display)}
+  .picker-path{
+    margin:12px 20px 0;padding:8px 10px;border:1px dashed var(--line-strong);border-radius:8px;
+    font:400 var(--fs-aux)/1.3 var(--font-mono);color:var(--ink-2);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .picker-list{
+    margin:12px 20px 0;padding:4px;max-height:220px;overflow:auto;
+    display:flex;flex-direction:column;gap:4px;
+    border:1px solid var(--line);border-radius:8px;background:var(--surface-2);
+  }
+  .picker-item{
+    width:100%;padding:10px 12px;border:0;border-radius:8px;background:transparent;
+    color:var(--ink);font:400 var(--fs-body)/var(--lh-body) var(--font-mono);
+    text-align:left;cursor:pointer;transition:background .12s,color .12s;
+  }
+  .picker-item:hover{background:var(--surface)}
+  .picker-item.selected{background:var(--brand-soft);color:var(--brand-ink);font-weight:500}
+  .picker-actions{display:flex;justify-content:flex-end;gap:10px;padding:16px 20px 18px}
+
+  .theme-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .theme-card{
+    display:flex;flex-direction:column;gap:10px;width:100%;padding:12px;
+    border:1px solid var(--line);border-radius:8px;background:var(--surface);
+    text-align:left;cursor:pointer;transition:border-color .14s,background .14s;
+  }
+  .theme-card:hover{border-color:var(--line-strong);background:var(--surface-2)}
+  .theme-card[aria-checked="true"]{border-color:var(--brand);background:var(--surface)}
+  .theme-swatch{position:relative;width:100%;height:72px;border-radius:8px;border:1px solid var(--line);overflow:hidden}
+  .theme-swatch i{position:absolute;left:12px;right:12px;top:12px;height:16px;border-radius:4px;display:block}
+  .theme-swatch em{position:absolute;left:12px;right:12px;bottom:12px;height:16px;border-radius:4px;display:block}
+  .theme-swatch.light{background:#E8EDF4}
+  .theme-swatch.light i{background:#FFFFFF;border:1px solid #C9DAF2}
+  .theme-swatch.light em{background:#1A5FBF}
+  .theme-swatch.dark{background:#0C0C0E;border-color:#33332E}
+  .theme-swatch.dark i{background:#1A1A1C;border:1px solid #48483F}
+  .theme-swatch.dark em{background:#E8B53A}
+  .theme-meta{display:flex;align-items:center;gap:10px}
+  .theme-info{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+  .theme-info b{font:600 var(--fs-body)/var(--lh-body) var(--font-text);color:var(--ink)}
+  .theme-info small{font:400 var(--fs-aux)/var(--lh-aux) var(--font-text);color:var(--ink-3)}
+  .theme-check{
+    width:calc(var(--fs-aux) + 8px);height:calc(var(--fs-aux) + 8px);border-radius:50%;display:grid;place-items:center;flex:none;
+    border:1px solid var(--line-strong);color:transparent;
+    font:600 var(--fs-aux)/1 var(--font-text);
+  }
+  .theme-card[aria-checked="true"] .theme-check{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+
+  /* ---------- 浮层 ---------- */
+  .tip{
+    position:fixed;z-index:40;padding:5px 8px;border-radius:6px;background:#1B1C1A;color:#F3F1EC;
+    font:400 var(--fs-aux)/var(--lh-aux) var(--font-mono);pointer-events:none;white-space:nowrap;
+    opacity:0;transform:translateY(2px);transition:opacity .12s;
+    box-shadow:0 6px 18px rgba(0,0,0,.24);
+  }
+  .tip.show{opacity:1;transform:none}
+  .toast{
+    position:fixed;left:50%;bottom:30px;z-index:50;transform:translate(-50%,8px);
+    background:#1F211E;color:#F5F3ED;padding:10px 16px;border-radius:9px;
+    font:500 var(--fs-body)/var(--lh-body) var(--font-text);box-shadow:0 12px 30px rgba(0,0,0,.28);
+    opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;
+  }
+  .toast.show{opacity:1;transform:translate(-50%,0)}
+  .page-note{font:400 var(--fs-aux)/1.2 var(--font-mono);color:var(--ink-3);letter-spacing:.04em}
+
+  @media (max-width:900px){
+    body{padding:0;background:var(--chrome);gap:0}
+    .app{width:100vw;height:100vh;border:0;border-radius:0;box-shadow:none}
+    .page-note{display:none}
+    .content.grid{grid-template-columns:1fr}
+    .list-head,.row{grid-template-columns:76px minmax(90px,1fr) 96px 56px calc(var(--fs-body) * 9 + 52px)}
+    .list-head span:nth-child(4){display:none}
+    .cell-res{display:none}
+  }
+
+  @media (max-width:720px){
+    .theme-options{grid-template-columns:1fr}
+    .setting-row{flex-direction:column;align-items:flex-start;gap:10px}
+    .path-value{max-width:100%}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{
+      animation-duration:.01ms !important;
+      animation-iteration-count:1 !important;
+      transition-duration:.01ms !important;
+      scroll-behavior:auto !important;
+    }
+    .card:hover{transform:none}
+  }
+</style>
+</head>
+<body>
+
+<main class="app">
+  <header class="titlebar">
+    <span class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+    <span class="app-title" data-i18n="app.title">桌面图标布局备份管理</span>
+    <span class="app-sub">Desktop Layout</span>
+    <div class="titlebar-actions">
+      <button class="icon-btn" id="settingsBtn" aria-label="设置" title="设置" data-i18n-aria="settings.title" data-i18n-title="settings.title">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+    <div class="win-controls" aria-hidden="true">
+      <button title="最小化" tabindex="-1" data-i18n-title="win.minimize"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 5h8"/></svg></button>
+      <button title="最大化" tabindex="-1" data-i18n-title="win.maximize"><svg viewBox="0 0 10 10" aria-hidden="true"><rect x="1.5" y="1.5" width="7" height="7"/></svg></button>
+      <button class="close" title="关闭" tabindex="-1" data-i18n-title="win.close"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1.5 1.5l7 7M8.5 1.5l-7 7"/></svg></button>
+    </div>
+  </header>
+
+  <section class="toolbar">
+    <div>
+      <div class="h-row">
+        <h1 data-i18n="toolbar.heading">备份</h1>
+        <span class="count" id="backupCount">3</span>
+      </div>
+      <p class="sub"><span data-i18n="toolbar.lastBackupPrefix">最近备份于</span> <b id="lastBackup">—</b></p>
+    </div>
+    <div class="actions">
+      <button class="btn-primary" id="backupBtn">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg>
+        <span class="spinner" aria-hidden="true"></span>
+        <span class="btn-label" data-i18n="toolbar.backup">备份当前布局</span>
+      </button>
+
+      <div class="pill-group" role="group" aria-label="排序" data-i18n-aria="sort.label">
+        <span class="group-label" aria-hidden="true" data-i18n="sort.label">排序</span>
+        <button class="dd-trigger" id="sortTrigger" aria-expanded="false" aria-haspopup="listbox">
+          <span class="dd-value" id="sortValue">按备份时间</span>
+          <span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
+        </button>
+        <button class="dir-btn" id="sortDir" title="降序" aria-label="当前为降序，点击切换为升序">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path id="sortArrow" d="M12 5v14M19 12l-7 7-7-7"/></svg>
+        </button>
+      </div>
+      <span class="sr-only" id="sortStatus" role="status" aria-live="polite"></span>
+
+      <div class="seg" role="group" aria-label="视图切换" data-i18n-aria="view.groupAria">
+        <button data-mode="grid" aria-pressed="true" aria-label="网格视图" title="网格视图" data-i18n-aria="view.grid" data-i18n-title="view.grid">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2" width="5" height="5"/><rect x="9" y="2" width="5" height="5"/><rect x="2" y="9" width="5" height="5"/><rect x="9" y="9" width="5" height="5"/></svg>
+          <span data-i18n="view.grid">网格</span>
+        </button>
+        <button data-mode="list" aria-pressed="false" aria-label="列表视图" title="列表视图" data-i18n-aria="view.list" data-i18n-title="view.list">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3h1M5 3h9M2 8h1M5 8h9M2 13h1M5 13h9"/></svg>
+          <span data-i18n="view.list">列表</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="content grid" id="content" aria-label="备份列表" data-i18n-aria="list.aria"></section>
+</main>
+
+<p class="page-note" data-i18n="page.note">静态 UI 样板 · 数据为模拟 · 备份 / 视图切换 / 预览 / 重命名均可交互</p>
+
+<div class="overlay" id="overlay" aria-hidden="true">
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="pvName" aria-describedby="pvMeta">
+    <header class="dlg-head">
+      <div>
+        <div class="dlg-title-row">
+          <h2 id="pvName">工作布局</h2>
+          <button class="icon-btn" id="pvRename" aria-label="更改名称" title="更改名称" data-i18n-aria="rename" data-i18n-title="rename">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10.8 2.6l2.6 2.6L5.6 13H3v-2.6z"/></svg>
+          </button>
+        </div>
+        <p class="dlg-meta" id="pvMeta"></p>
+      </div>
+      <div class="dlg-actions">
+        <button class="close-btn" id="pvClose" aria-label="关闭预览" data-i18n-aria="preview.close">
+          <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8"/></svg>
+        </button>
+      </div>
+    </header>
+    <div class="dlg-body">
+      <div class="desktop" id="pvDesktop"></div>
+      <p class="dlg-foot" data-i18n="preview.hint">按原分辨率等比缩放 · 悬停查看图标坐标 · Esc 关闭</p>
+    </div>
+    <footer class="dlg-foot-bar">
+      <button class="btn-danger-ghost" id="pvDelete" data-i18n="preview.delete">删除当前布局配置</button>
+      <button class="btn-primary btn-sm" id="pvUse">使用布局</button>
+    </footer>
+  </div>
+</div>
+
+<div class="settings-overlay" id="settingsOverlay" aria-hidden="true">
+  <div class="settings-dialog" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+    <header class="settings-head">
+      <div>
+        <h2 class="settings-title" id="settingsTitle" data-i18n="settings.title">设置</h2>
+      </div>
+      <button class="close-btn" id="settingsClose" aria-label="关闭设置" data-i18n-aria="settings.close">
+        <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8"/></svg>
+      </button>
+    </header>
+    <div class="settings-body">
+      <section class="settings-section" aria-labelledby="langLabel">
+        <div class="section-head">
+          <h3 id="langLabel" data-i18n="settings.langSection">语言</h3>
+          <p data-i18n="settings.langDesc">界面显示语言</p>
+        </div>
+        <div class="setting-row">
+          <div class="row-label">
+            <b data-i18n="settings.langLabel">界面语言</b>
+            <small data-i18n="settings.langHint">切换后立即生效</small>
+          </div>
+          <div class="row-control">
+            <div class="select-wrap">
+              <select id="languageSelect" aria-label="界面语言" data-i18n-aria="settings.langLabel">
+                <option value="zh-CN">简体中文</option>
+                <option value="zh-TW">繁體中文</option>
+                <option value="en">English</option>
+                <option value="fr">Français</option>
+                <option value="ko">한국어</option>
+                <option value="ja">日本語</option>
+              </select>
+              <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5l3.5 3.5 3.5-3.5"/></svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="settings-section" aria-labelledby="themeLabel">
+        <div class="section-head">
+          <h3 id="themeLabel" data-i18n="settings.themeSection">主题</h3>
+          <p data-i18n="settings.themeDesc">选择界面配色，立即生效</p>
+        </div>
+        <div class="theme-options" role="radiogroup" aria-labelledby="themeLabel" id="themeOptions">
+          <button class="theme-card" data-theme="light" role="radio" aria-checked="true">
+            <span class="theme-swatch light" aria-hidden="true"><i></i><em></em></span>
+            <span class="theme-meta">
+              <span class="theme-info"><b data-i18n="theme.light">白天</b><small data-i18n="theme.lightDesc">蓝白主题</small></span>
+              <span class="theme-check" aria-hidden="true">✓</span>
+            </span>
+          </button>
+          <button class="theme-card" data-theme="dark" role="radio" aria-checked="false">
+            <span class="theme-swatch dark" aria-hidden="true"><i></i><em></em></span>
+            <span class="theme-meta">
+              <span class="theme-info"><b data-i18n="theme.dark">黑夜</b><small data-i18n="theme.darkDesc">黄黑主题</small></span>
+              <span class="theme-check" aria-hidden="true">✓</span>
+            </span>
+          </button>
+        </div>
+      </section>
+
+      <section class="settings-section" aria-labelledby="fontLabel">
+        <div class="section-head">
+          <h3 id="fontLabel" data-i18n="settings.fontSection">字体大小</h3>
+          <p data-i18n="settings.fontDesc">调整界面文字与控件的显示大小</p>
+        </div>
+        <div class="setting-row">
+          <div class="row-label">
+            <b data-i18n="settings.scaleLabel">界面缩放</b>
+            <small data-i18n="settings.scaleHint">影响所有文字、按钮与列表密度</small>
+          </div>
+          <div class="font-options" role="group" aria-label="字体大小" data-i18n-aria="settings.fontAria" id="fontOptions">
+            <button class="font-opt" data-size="small" aria-pressed="false" data-i18n="font.small">小</button>
+            <button class="font-opt active" data-size="normal" aria-pressed="true" data-i18n="font.standard">标准</button>
+            <button class="font-opt" data-size="large" aria-pressed="false" data-i18n="font.large">大</button>
+            <button class="font-opt" data-size="xlarge" aria-pressed="false" data-i18n="font.xlarge">特大</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="settings-section" aria-labelledby="storageLabel">
+        <div class="section-head">
+          <h3 id="storageLabel" data-i18n="settings.storageSection">备份存储位置</h3>
+          <p data-i18n="settings.storageDesc">备份文件与图标缓存的保存目录</p>
+        </div>
+        <div class="storage-switch" id="storageSwitch" role="radiogroup" aria-labelledby="storageLabel" data-index="0">
+          <span class="switch-thumb" aria-hidden="true"></span>
+          <button class="switch-opt" data-storage="documents" role="radio" aria-checked="true" data-i18n="storage.documents">文档目录</button>
+          <button class="switch-opt" data-storage="app" role="radio" aria-checked="false" data-i18n="storage.app">软件目录</button>
+          <button class="switch-opt" data-storage="custom" role="radio" aria-checked="false" data-i18n="storage.custom">自定义</button>
+        </div>
+        <div class="storage-path">
+          <div class="storage-path-head">
+            <span class="storage-path-label" data-i18n="settings.dirLabel">当前目录</span>
+            <span class="storage-path-hint" id="storageHint"></span>
+          </div>
+          <div class="storage-path-row">
+            <input class="path-input" id="storagePath" type="text" readonly aria-label="备份目录" data-i18n-aria="settings.dirLabel">
+            <button class="placeholder-btn storage-change" id="storageChange" hidden data-i18n="settings.change">更改</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+<span class="sr-only" id="themeStatus" role="status" aria-live="polite"></span>
+
+<div class="picker-overlay" id="pickerOverlay" aria-hidden="true">
+  <div class="picker-dialog" role="dialog" aria-modal="true" aria-labelledby="pickerTitle">
+    <div class="picker-head">
+      <h2 class="picker-title" id="pickerTitle" data-i18n="storage.pickTitle">选择文件夹</h2>
+    </div>
+    <div class="picker-path" id="pickerPath">D:\</div>
+    <div class="picker-list" id="pickerList" role="listbox" aria-label="文件夹列表" data-i18n-aria="storage.pickAria">
+      <button class="picker-item selected" role="option" aria-selected="true" data-path="C:\Users\liang\Documents">C:\Users\liang\Documents</button>
+      <button class="picker-item" role="option" aria-selected="false" data-path="C:\Users\liang\Desktop">C:\Users\liang\Desktop</button>
+      <button class="picker-item" role="option" aria-selected="false" data-path="D:\Backups">D:\Backups</button>
+      <button class="picker-item" role="option" aria-selected="false" data-path="D:\DesktopIconBackupData">D:\DesktopIconBackupData</button>
+    </div>
+    <div class="picker-actions">
+      <button class="btn-ghost" id="pickerCancel" data-i18n="confirm.cancel">取消</button>
+      <button class="btn-primary btn-sm" id="pickerConfirm" data-i18n="storage.pickConfirm">选择此文件夹</button>
+    </div>
+  </div>
+</div>
+
+<div class="confirm-overlay" id="confirmOverlay" aria-hidden="true">
+  <div class="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" aria-describedby="confirmText">
+    <h2 class="confirm-title" id="confirmTitle" data-i18n="confirm.title">删除布局配置</h2>
+    <p class="confirm-text" id="confirmText">删除后无法恢复，确认删除 <b id="confirmName">工作布局</b>？</p>
+    <div class="confirm-actions">
+      <button class="btn-ghost" id="confirmCancel" data-i18n="confirm.cancel">取消</button>
+      <button class="btn-danger" id="confirmDelete" data-i18n="confirm.delete">删除</button>
+    </div>
+  </div>
+</div>
+
+<div class="tip" id="tip" aria-hidden="true"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var PENCIL = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10.8 2.6l2.6 2.6L5.6 13H3v-2.6z"/></svg>';
+
+  var COLORS = ['#1A5FBF','#1F6FD1','#0E7C85','#6B43C0','#A32E3C','#96620F','#A03D77','#4C5563'];
+
+  var LANGUAGES = [
+    { value: 'zh-CN', label: '简体中文' },
+    { value: 'zh-TW', label: '繁體中文' },
+    { value: 'en', label: 'English' },
+    { value: 'fr', label: 'Français' },
+    { value: 'ko', label: '한국어' },
+    { value: 'ja', label: '日本語' }
+  ];
+  var currentLang = 'zh-CN';
+  var LOCALES = { 'zh-CN': 'zh-Hans-CN', 'zh-TW': 'zh-Hant-TW', en: 'en', fr: 'fr', ko: 'ko', ja: 'ja' };
+
+  var I18N = {
+    'zh-CN': {
+      'app.title': '桌面图标布局备份管理',
+      'win.minimize': '最小化', 'win.maximize': '最大化', 'win.close': '关闭',
+      'toolbar.heading': '备份', 'toolbar.lastBackupPrefix': '最近备份于',
+      'toolbar.backup': '备份当前布局', 'toolbar.collecting': '正在采集…',
+      'sort.label': '排序', 'sort.name': '按名称排序', 'sort.time': '按备份时间',
+      'sort.resolution': '按分辨率', 'sort.count': '按图标总数',
+      'sort.dir.asc': '升序', 'sort.dir.desc': '降序',
+      'sort.ariaAsc': '当前为升序，点击切换为降序', 'sort.ariaDesc': '当前为降序，点击切换为升序',
+      'sort.status': '{option} · {dir}',
+      'view.groupAria': '视图切换', 'view.grid': '网格', 'view.list': '列表',
+      'list.aria': '备份列表', 'list.name': '名称', 'list.time': '备份时间',
+      'list.resolution': '分辨率', 'list.count': '图标数', 'list.actions': '操作',
+      'card.current': '当前使用中', 'card.preview': '预览布局', 'card.use': '使用布局',
+      'card.icons': '{n} 个图标', 'rename': '更改名称',
+      'preview.hint': '按原分辨率等比缩放 · 悬停查看图标坐标 · Esc 关闭',
+      'preview.close': '关闭预览', 'preview.delete': '删除当前布局配置', 'preview.use': '使用布局',
+      'confirm.title': '删除布局配置', 'confirm.text': '删除后无法恢复，确认删除「{name}」？',
+      'confirm.cancel': '取消', 'confirm.delete': '删除',
+      'settings.title': '设置', 'settings.sub': '外观设置保存在本机，随时可以切换。', 'settings.close': '关闭设置',
+      'settings.langSection': '语言', 'settings.langDesc': '界面显示语言',
+      'settings.langLabel': '界面语言', 'settings.langHint': '切换后立即生效',
+      'settings.themeSection': '主题', 'settings.themeDesc': '选择界面配色，立即生效',
+      'theme.light': '白天', 'theme.lightDesc': '蓝白主题', 'theme.dark': '黑夜', 'theme.darkDesc': '黄黑主题',
+      'settings.fontSection': '字体大小', 'settings.fontDesc': '调整界面文字与控件的显示大小',
+      'settings.scaleLabel': '界面缩放', 'settings.scaleHint': '影响所有文字、按钮与列表密度',
+      'settings.fontAria': '字体大小',
+      'font.small': '小', 'font.standard': '标准', 'font.large': '大', 'font.xlarge': '特大',
+      'settings.storageSection': '备份存储位置', 'settings.storageDesc': '备份文件与图标缓存的保存目录',
+      'storage.documents': '文档目录', 'storage.app': '软件目录', 'storage.custom': '自定义',
+      'storage.hint.documents': '在文档文件夹下创建 DesktopIconBackup 文件夹',
+      'storage.hint.app': '在软件所在目录下创建 backups 文件夹',
+      'storage.hint.custom': '手动指定备份保存目录',
+      'storage.pickTitle': '选择文件夹', 'storage.pickAria': '文件夹列表', 'storage.pickConfirm': '选择此文件夹',
+      'settings.dirLabel': '当前目录', 'settings.dirHint': '备份数据、原始二进制与图标缓存均保存在此',
+      'settings.change': '更改', 'soon': '即将支持',
+      'backup.default': '备份 {time}',
+      'toast.backedUp': '已备份 {n} 个图标', 'toast.applied': '已应用「{name}」布局（样板演示）',
+      'toast.deleted': '已删除「{name}」布局',
+      'themeStatus.light': '主题已切换为白天模式', 'themeStatus.dark': '主题已切换为黑夜模式',
+      'toast.langChanged': '界面语言已切换为 {lang}',
+      'toast.fontChanged': '字体大小已调整为 {size}',
+      'page.note': '静态 UI 样板 · 数据为模拟 · 备份 / 视图切换 / 预览 / 重命名均可交互'
+    },
+    'zh-TW': {
+      'app.title': '桌面圖示配置備份管理',
+      'win.minimize': '最小化', 'win.maximize': '最大化', 'win.close': '關閉',
+      'toolbar.heading': '備份', 'toolbar.lastBackupPrefix': '最近備份於',
+      'toolbar.backup': '備份目前配置', 'toolbar.collecting': '正在擷取…',
+      'sort.label': '排序', 'sort.name': '依名稱排序', 'sort.time': '依備份時間',
+      'sort.resolution': '依解析度', 'sort.count': '依圖示總數',
+      'sort.dir.asc': '遞增', 'sort.dir.desc': '遞減',
+      'sort.ariaAsc': '目前為遞增，點擊切換為遞減', 'sort.ariaDesc': '目前為遞減，點擊切換為遞增',
+      'sort.status': '{option} · {dir}',
+      'view.groupAria': '檢視切換', 'view.grid': '網格', 'view.list': '清單',
+      'list.aria': '備份清單', 'list.name': '名稱', 'list.time': '備份時間',
+      'list.resolution': '解析度', 'list.count': '圖示數', 'list.actions': '操作',
+      'card.current': '目前使用中', 'card.preview': '預覽配置', 'card.use': '使用配置',
+      'card.icons': '{n} 個圖示', 'rename': '變更名稱',
+      'preview.hint': '依原解析度等比縮放 · 懸停查看圖示座標 · Esc 關閉',
+      'preview.close': '關閉預覽', 'preview.delete': '刪除目前配置', 'preview.use': '使用配置',
+      'confirm.title': '刪除配置', 'confirm.text': '刪除後無法復原，確定要刪除「{name}」嗎？',
+      'confirm.cancel': '取消', 'confirm.delete': '刪除',
+      'settings.title': '設定', 'settings.sub': '外觀設定儲存在本機，隨時可以切換。', 'settings.close': '關閉設定',
+      'settings.langSection': '語言', 'settings.langDesc': '介面顯示語言',
+      'settings.langLabel': '介面語言', 'settings.langHint': '切換後立即生效',
+      'settings.themeSection': '主題', 'settings.themeDesc': '選擇介面配色，立即生效',
+      'theme.light': '白天', 'theme.lightDesc': '藍白主題', 'theme.dark': '黑夜', 'theme.darkDesc': '黃黑主題',
+      'settings.fontSection': '字型大小', 'settings.fontDesc': '調整介面文字與控制項的顯示大小',
+      'settings.scaleLabel': '介面縮放', 'settings.scaleHint': '影響所有文字、按鈕與清單密度',
+      'settings.fontAria': '字型大小',
+      'font.small': '小', 'font.standard': '標準', 'font.large': '大', 'font.xlarge': '特大',
+      'settings.storageSection': '備份儲存位置', 'settings.storageDesc': '備份檔案與圖示快取的儲存目錄',
+      'storage.documents': '文件目錄', 'storage.app': '軟體目錄', 'storage.custom': '自訂',
+      'storage.hint.documents': '在文件資料夾下建立 DesktopIconBackup 資料夾',
+      'storage.hint.app': '在軟體所在目錄下建立 backups 資料夾',
+      'storage.hint.custom': '手動指定備份儲存目錄',
+      'storage.pickTitle': '選擇資料夾', 'storage.pickAria': '資料夾清單', 'storage.pickConfirm': '選擇此資料夾',
+      'settings.dirLabel': '目前目錄', 'settings.dirHint': '備份資料、原始二進位與圖示快取均儲存於此',
+      'settings.change': '變更', 'soon': '即將支援',
+      'backup.default': '備份 {time}',
+      'toast.backedUp': '已備份 {n} 個圖示', 'toast.applied': '已套用「{name}」配置（樣板示範）',
+      'toast.deleted': '已刪除「{name}」配置',
+      'themeStatus.light': '主題已切換為白天模式', 'themeStatus.dark': '主題已切換為黑夜模式',
+      'toast.langChanged': '介面語言已切換為 {lang}',
+      'toast.fontChanged': '字型大小已調整為 {size}',
+      'page.note': '靜態 UI 樣板 · 資料為模擬 · 備份 / 檢視切換 / 預覽 / 變更名稱均可互動'
+    },
+    en: {
+      'app.title': 'Desktop Icon Layout Backup',
+      'win.minimize': 'Minimize', 'win.maximize': 'Maximize', 'win.close': 'Close',
+      'toolbar.heading': 'Backups', 'toolbar.lastBackupPrefix': 'Last backup:',
+      'toolbar.backup': 'Back up current layout', 'toolbar.collecting': 'Collecting…',
+      'sort.label': 'Sort', 'sort.name': 'By name', 'sort.time': 'By backup time',
+      'sort.resolution': 'By resolution', 'sort.count': 'By icon count',
+      'sort.dir.asc': 'Ascending', 'sort.dir.desc': 'Descending',
+      'sort.ariaAsc': 'Currently ascending. Click to switch to descending',
+      'sort.ariaDesc': 'Currently descending. Click to switch to ascending',
+      'sort.status': '{option} · {dir}',
+      'view.groupAria': 'View mode', 'view.grid': 'Grid', 'view.list': 'List',
+      'list.aria': 'Backup list', 'list.name': 'Name', 'list.time': 'Backup time',
+      'list.resolution': 'Resolution', 'list.count': 'Icons', 'list.actions': 'Actions',
+      'card.current': 'In use', 'card.preview': 'Preview layout', 'card.use': 'Use layout',
+      'card.icons': '{n} icons', 'rename': 'Rename',
+      'preview.hint': 'Scaled to fit · Hover an icon for coordinates · Esc to close',
+      'preview.close': 'Close preview', 'preview.delete': 'Delete this layout', 'preview.use': 'Use layout',
+      'confirm.title': 'Delete layout', 'confirm.text': 'This cannot be undone. Delete “{name}”?',
+      'confirm.cancel': 'Cancel', 'confirm.delete': 'Delete',
+      'settings.title': 'Settings', 'settings.sub': 'Appearance settings are saved on this device.',
+      'settings.close': 'Close settings',
+      'settings.langSection': 'Language', 'settings.langDesc': 'Interface language',
+      'settings.langLabel': 'Interface language', 'settings.langHint': 'Applies immediately',
+      'settings.themeSection': 'Theme', 'settings.themeDesc': 'Choose a color theme',
+      'theme.light': 'Light', 'theme.lightDesc': 'Blue & white', 'theme.dark': 'Dark', 'theme.darkDesc': 'Yellow & black',
+      'settings.fontSection': 'Text size', 'settings.fontDesc': 'Adjust text and control sizes',
+      'settings.scaleLabel': 'UI scale', 'settings.scaleHint': 'Affects all text, buttons and list density',
+      'settings.fontAria': 'Text size',
+      'font.small': 'Small', 'font.standard': 'Standard', 'font.large': 'Large', 'font.xlarge': 'Extra large',
+      'settings.storageSection': 'Backup location', 'settings.storageDesc': 'Folder for backups and icon cache',
+      'storage.documents': 'Documents folder', 'storage.app': 'App folder', 'storage.custom': 'Custom',
+      'storage.hint.documents': 'Creates a DesktopIconBackup folder inside Documents',
+      'storage.hint.app': 'Creates a backups folder next to the app',
+      'storage.hint.custom': 'Choose a backup folder manually',
+      'storage.pickTitle': 'Choose folder', 'storage.pickAria': 'Folder list', 'storage.pickConfirm': 'Select this folder',
+      'settings.dirLabel': 'Current folder', 'settings.dirHint': 'Backups, raw binary and icon cache are stored here',
+      'settings.change': 'Change', 'soon': 'Coming soon',
+      'backup.default': 'Backup {time}',
+      'toast.backedUp': 'Backed up {n} icons', 'toast.applied': 'Applied “{name}” (demo)',
+      'toast.deleted': 'Deleted “{name}”',
+      'themeStatus.light': 'Switched to light theme', 'themeStatus.dark': 'Switched to dark theme',
+      'toast.langChanged': 'Interface language switched to {lang}',
+      'toast.fontChanged': 'Text size set to {size}',
+      'page.note': 'Static UI mockup · Mock data · Backup, view switch, preview and rename are interactive'
+    },
+    fr: {
+      'app.title': 'Sauvegarde des dispositions d’icônes',
+      'win.minimize': 'Réduire', 'win.maximize': 'Agrandir', 'win.close': 'Fermer',
+      'toolbar.heading': 'Sauvegardes', 'toolbar.lastBackupPrefix': 'Dernière sauvegarde :',
+      'toolbar.backup': 'Sauvegarder la disposition actuelle', 'toolbar.collecting': 'Collecte…',
+      'sort.label': 'Trier', 'sort.name': 'Par nom', 'sort.time': 'Par date de sauvegarde',
+      'sort.resolution': 'Par résolution', 'sort.count': "Par nombre d’icônes",
+      'sort.dir.asc': 'Croissant', 'sort.dir.desc': 'Décroissant',
+      'sort.ariaAsc': "Actuellement croissant. Cliquez pour passer à l’ordre décroissant",
+      'sort.ariaDesc': "Actuellement décroissant. Cliquez pour passer à l’ordre croissant",
+      'sort.status': '{option} · {dir}',
+      'view.groupAria': "Mode d’affichage", 'view.grid': 'Grille', 'view.list': 'Liste',
+      'list.aria': 'Liste des sauvegardes', 'list.name': 'Nom', 'list.time': 'Sauvegarde',
+      'list.resolution': 'Résolution', 'list.count': 'Icônes', 'list.actions': 'Actions',
+      'card.current': "En cours d’utilisation", 'card.preview': 'Aperçu', 'card.use': 'Utiliser',
+      'card.icons': '{n} icônes', 'rename': 'Renommer',
+      'preview.hint': "Mise à l’échelle · Survolez une icône pour ses coordonnées · Échap pour fermer",
+      'preview.close': "Fermer l’aperçu", 'preview.delete': 'Supprimer cette disposition',
+      'preview.use': 'Utiliser',
+      'confirm.title': 'Supprimer la disposition', 'confirm.text': 'Action irréversible. Supprimer « {name} » ?',
+      'confirm.cancel': 'Annuler', 'confirm.delete': 'Supprimer',
+      'settings.title': 'Paramètres', 'settings.sub': "Les paramètres d’apparence sont enregistrés sur cet appareil.",
+      'settings.close': 'Fermer les paramètres',
+      'settings.langSection': 'Langue', 'settings.langDesc': "Langue de l’interface",
+      'settings.langLabel': "Langue de l’interface", 'settings.langHint': 'Appliqué immédiatement',
+      'settings.themeSection': 'Thème', 'settings.themeDesc': 'Choisissez un thème de couleurs',
+      'theme.light': 'Clair', 'theme.lightDesc': 'Bleu et blanc', 'theme.dark': 'Sombre', 'theme.darkDesc': 'Jaune et noir',
+      'settings.fontSection': 'Taille du texte', 'settings.fontDesc': 'Ajuster la taille du texte et des contrôles',
+      'settings.scaleLabel': "Échelle de l’interface", 'settings.scaleHint': 'Affecte le texte, les boutons et la densité des listes',
+      'settings.fontAria': 'Taille du texte',
+      'font.small': 'Petit', 'font.standard': 'Standard', 'font.large': 'Grand', 'font.xlarge': 'Très grand',
+      'settings.storageSection': 'Emplacement des sauvegardes',
+      'settings.storageDesc': "Dossier des sauvegardes et du cache d’icônes",
+      'storage.documents': 'Dossier Documents', 'storage.app': "Dossier de l’application", 'storage.custom': 'Personnalisé',
+      'storage.hint.documents': 'Crée un dossier DesktopIconBackup dans Documents',
+      'storage.hint.app': "Crée un dossier backups à côté de l’application",
+      'storage.hint.custom': 'Choisir un dossier de sauvegarde manuellement',
+      'storage.pickTitle': 'Choisir un dossier', 'storage.pickAria': 'Liste des dossiers', 'storage.pickConfirm': 'Choisir ce dossier',
+      'settings.dirLabel': 'Dossier actuel',
+      'settings.dirHint': 'Les sauvegardes, le binaire brut et le cache d’icônes sont stockés ici',
+      'settings.change': 'Modifier', 'soon': 'Bientôt disponible',
+      'backup.default': 'Sauvegarde {time}',
+      'toast.backedUp': '{n} icônes sauvegardées', 'toast.applied': '« {name} » appliqué (démo)',
+      'toast.deleted': '« {name} » supprimé',
+      'themeStatus.light': 'Thème clair activé', 'themeStatus.dark': 'Thème sombre activé',
+      'toast.langChanged': "Langue de l’interface : {lang}",
+      'toast.fontChanged': 'Taille du texte : {size}',
+      'page.note': 'Maquette UI statique · Données fictives · Sauvegarde, affichage, aperçu et renommage interactifs'
+    },
+    ko: {
+      'app.title': '바탕화면 아이콘 배열 백업 관리',
+      'win.minimize': '최소화', 'win.maximize': '최대화', 'win.close': '닫기',
+      'toolbar.heading': '백업', 'toolbar.lastBackupPrefix': '최근 백업:',
+      'toolbar.backup': '현재 배열 백업', 'toolbar.collecting': '수집 중…',
+      'sort.label': '정렬', 'sort.name': '이름순', 'sort.time': '백업 시간순',
+      'sort.resolution': '해상도순', 'sort.count': '아이콘 수순',
+      'sort.dir.asc': '오름차순', 'sort.dir.desc': '내림차순',
+      'sort.ariaAsc': '현재 오름차순입니다. 클릭하여 내림차순으로 전환',
+      'sort.ariaDesc': '현재 내림차순입니다. 클릭하여 오름차순으로 전환',
+      'sort.status': '{option} · {dir}',
+      'view.groupAria': '보기 전환', 'view.grid': '그리드', 'view.list': '목록',
+      'list.aria': '백업 목록', 'list.name': '이름', 'list.time': '백업 시간',
+      'list.resolution': '해상도', 'list.count': '아이콘 수', 'list.actions': '작업',
+      'card.current': '사용 중', 'card.preview': '배치 미리보기', 'card.use': '배치 사용',
+      'card.icons': '아이콘 {n}개', 'rename': '이름 변경',
+      'preview.hint': '원래 해상도에 맞춰 축소 · 아이콘에 마우스를 올리면 좌표 표시 · Esc로 닫기',
+      'preview.close': '미리보기 닫기', 'preview.delete': '현재 배열 구성 삭제', 'preview.use': '배치 사용',
+      'confirm.title': '배열 구성 삭제',
+      'confirm.text': '삭제 후 복구할 수 없습니다. “{name}”을(를) 삭제할까요?',
+      'confirm.cancel': '취소', 'confirm.delete': '삭제',
+      'settings.title': '설정', 'settings.sub': '모양 설정은 이 기기에 저장됩니다.', 'settings.close': '설정 닫기',
+      'settings.langSection': '언어', 'settings.langDesc': '인터페이스 언어',
+      'settings.langLabel': '인터페이스 언어', 'settings.langHint': '즉시 적용',
+      'settings.themeSection': '테마', 'settings.themeDesc': '색상 테마 선택',
+      'theme.light': '라이트', 'theme.lightDesc': '블루 & 화이트', 'theme.dark': '다크', 'theme.darkDesc': '옐로 & 블랙',
+      'settings.fontSection': '글자 크기', 'settings.fontDesc': '텍스트와 컨트롤 크기 조정',
+      'settings.scaleLabel': 'UI 배율', 'settings.scaleHint': '모든 텍스트, 버튼, 목록 밀도에 영향',
+      'settings.fontAria': '글자 크기',
+      'font.small': '작게', 'font.standard': '표준', 'font.large': '크게', 'font.xlarge': '매우 크게',
+      'settings.storageSection': '백업 저장 위치', 'settings.storageDesc': '백업 파일 및 아이콘 캐시 저장 폴더',
+      'storage.documents': '문서 폴더', 'storage.app': '앱 폴더', 'storage.custom': '사용자 지정',
+      'storage.hint.documents': '문서 폴더에 DesktopIconBackup 폴더를 만듭니다',
+      'storage.hint.app': '앱 옆에 backups 폴더를 만듭니다',
+      'storage.hint.custom': '백업 폴더를 직접 선택합니다',
+      'storage.pickTitle': '폴더 선택', 'storage.pickAria': '폴더 목록', 'storage.pickConfirm': '이 폴더 선택',
+      'settings.dirLabel': '현재 폴더', 'settings.dirHint': '백업 데이터, 원시 바이너리, 아이콘 캐시가 여기에 저장됩니다',
+      'settings.change': '변경', 'soon': '곧 지원',
+      'backup.default': '백업 {time}',
+      'toast.backedUp': '아이콘 {n}개 백업 완료', 'toast.applied': '“{name}” 적용됨 (데모)',
+      'toast.deleted': '“{name}” 삭제됨',
+      'themeStatus.light': '라이트 테마로 전환됨', 'themeStatus.dark': '다크 테마로 전환됨',
+      'toast.langChanged': '인터페이스 언어가 {lang}(으)로 전환되었습니다',
+      'toast.fontChanged': '글자 크기를 {size}(으)로 변경했습니다',
+      'page.note': '정적 UI 목업 · 시뮬레이션 데이터 · 백업 / 보기 전환 / 미리보기 / 이름 변경 상호작용 가능'
+    },
+    ja: {
+      'app.title': 'デスクトップアイコン配置バックアップ管理',
+      'win.minimize': '最小化', 'win.maximize': '最大化', 'win.close': '閉じる',
+      'toolbar.heading': 'バックアップ', 'toolbar.lastBackupPrefix': '最終バックアップ:',
+      'toolbar.backup': '現在の配置をバックアップ', 'toolbar.collecting': '取得中…',
+      'sort.label': '並び替え', 'sort.name': '名前順', 'sort.time': 'バックアップ日時順',
+      'sort.resolution': '解像度順', 'sort.count': 'アイコン数順',
+      'sort.dir.asc': '昇順', 'sort.dir.desc': '降順',
+      'sort.ariaAsc': '現在は昇順です。クリックで降順に切り替え',
+      'sort.ariaDesc': '現在は降順です。クリックで昇順に切り替え',
+      'sort.status': '{option} · {dir}',
+      'view.groupAria': '表示切替', 'view.grid': 'グリッド', 'view.list': 'リスト',
+      'list.aria': 'バックアップ一覧', 'list.name': '名前', 'list.time': 'バックアップ日時',
+      'list.resolution': '解像度', 'list.count': 'アイコン数', 'list.actions': '操作',
+      'card.current': '使用中', 'card.preview': 'レイアウトをプレビュー', 'card.use': 'レイアウトを使用',
+      'card.icons': 'アイコン {n} 個', 'rename': '名前を変更',
+      'preview.hint': '元の解像度に合わせて縮小表示 · アイコンにカーソルで座標表示 · Escで閉じる',
+      'preview.close': 'プレビューを閉じる', 'preview.delete': '現在の配置を削除', 'preview.use': 'レイアウトを使用',
+      'confirm.title': '配置を削除', 'confirm.text': '削除は元に戻せません。「{name}」を削除しますか？',
+      'confirm.cancel': 'キャンセル', 'confirm.delete': '削除',
+      'settings.title': '設定', 'settings.sub': '外観設定はこのデバイスに保存されます。', 'settings.close': '設定を閉じる',
+      'settings.langSection': '言語', 'settings.langDesc': '表示言語',
+      'settings.langLabel': '表示言語', 'settings.langHint': 'すぐに適用',
+      'settings.themeSection': 'テーマ', 'settings.themeDesc': 'カラーテーマを選択',
+      'theme.light': 'ライト', 'theme.lightDesc': 'ブルー＆ホワイト', 'theme.dark': 'ダーク', 'theme.darkDesc': 'イエロー＆ブラック',
+      'settings.fontSection': '文字サイズ', 'settings.fontDesc': '文字とコントロールのサイズを調整',
+      'settings.scaleLabel': 'UI スケール', 'settings.scaleHint': 'すべての文字・ボタン・リスト密度に影響',
+      'settings.fontAria': '文字サイズ',
+      'font.small': '小', 'font.standard': '標準', 'font.large': '大', 'font.xlarge': '特大',
+      'settings.storageSection': 'バックアップ保存先', 'settings.storageDesc': 'バックアップとアイコンキャッシュの保存先',
+      'storage.documents': 'ドキュメント', 'storage.app': 'アプリフォルダー', 'storage.custom': 'カスタム',
+      'storage.hint.documents': 'ドキュメント内に DesktopIconBackup フォルダーを作成',
+      'storage.hint.app': 'アプリと同じ場所に backups フォルダーを作成',
+      'storage.hint.custom': '保存先を手動で指定',
+      'storage.pickTitle': 'フォルダーを選択', 'storage.pickAria': 'フォルダー一覧', 'storage.pickConfirm': 'このフォルダーを選択',
+      'settings.dirLabel': '現在のフォルダー', 'settings.dirHint': 'バックアップデータ、生バイナリ、アイコンキャッシュはここに保存されます',
+      'settings.change': '変更', 'soon': '近日対応',
+      'backup.default': 'バックアップ {time}',
+      'toast.backedUp': '{n} 個のアイコンをバックアップしました', 'toast.applied': '「{name}」を適用しました（デモ）',
+      'toast.deleted': '「{name}」を削除しました',
+      'themeStatus.light': 'ライトテーマに切り替えました', 'themeStatus.dark': 'ダークテーマに切り替えました',
+      'toast.langChanged': '表示言語を {lang} に切り替えました',
+      'toast.fontChanged': '文字サイズを {size} に変更しました',
+      'page.note': '静的 UI モック · データはサンプル · バックアップ / 表示切替 / プレビュー / 名前変更が操作可能'
+    }
+  };
+
+
+  var BASE_NAMES = [
+    'Krita','Blender','Unreal Engine','Unity','Godot','VS Code','Rider','WebStorm',
+    'Figma','Photoshop','After Effects','Premiere Pro','DaVinci Resolve','Steam','Epic Games',
+    'LM Studio','Docker Desktop','Postman','Git Bash','Node.js','Python 3.12','Ollama','ComfyUI',
+    'SD-Forge','Obsidian','Notion','Discord','Telegram','微信','钉钉','飞书','剪映','PixPin',
+    'Snipaste','Wallpaper Engine','RPG Maker MV','素材库','项目文档','设计稿','参考图','截图收藏',
+    '待整理','回收站','此电脑','网络','控制面板'
+  ];
+  var EXTRA_TYPES = ['素材','参考','文档','插件','脚本','贴图','模型','备份','测试','归档'];
+
+  function buildNames(count){
+    var out = [];
+    for (var i = 0; i < count; i++){
+      if (i < BASE_NAMES.length){
+        out.push(BASE_NAMES[i]);
+      } else {
+        var k = i - BASE_NAMES.length;
+        var n = String(Math.floor(k / EXTRA_TYPES.length) + 1);
+        out.push(EXTRA_TYPES[k % EXTRA_TYPES.length] + ' ' + (n.length < 2 ? '0' + n : n));
+      }
+    }
+    return out;
+  }
+
+  function makeIcons(count, w, h, rightGroup){
+    var names = buildNames(count);
+    var pw = w >= 2400 ? 112 : 96;
+    var ph = w >= 2400 ? 136 : 110;
+    var rows = Math.floor((h - 60) / ph);
+    var icons = names.map(function(name, i){
+      return {
+        index: i,
+        name: name,
+        x: 26 + Math.floor(i / rows) * pw,
+        y: 26 + (i % rows) * ph
+      };
+    });
+    if (rightGroup){
+      var n = Math.min(rightGroup, icons.length);
+      for (var k = 0; k < n; k++){
+        var it = icons[icons.length - n + k];
+        it.x = w - 132;
+        it.y = 44 + k * ph;
+      }
+    }
+    return icons;
+  }
+
+  var state = {
+    viewMode: localStorage.getItem('ui.viewMode') === 'list' ? 'list' : 'grid',
+    previewId: null,
+    backups: [
+      { id:'b1', name:'工作布局', createdAt:'2026-11-03T14:32:00+08:00', current:true,
+        display:{ width:2560, height:1440, scale:150 }, icons: makeIcons(131,2560,1440,10) },
+      { id:'b2', name:'笔记本外出', createdAt:'2026-11-02T21:08:00+08:00', current:false,
+        display:{ width:1920, height:1080, scale:100 }, icons: makeIcons(96,1920,1080,8) },
+      { id:'b3', name:'临时调试', createdAt:'2026-10-30T09:45:00+08:00', current:false,
+        display:{ width:2560, height:1440, scale:150 }, icons: makeIcons(113,2560,1440,0) }
+    ]
+  };
+
+  var $ = function(sel){ return document.querySelector(sel); };
+  var content = $('#content');
+  var overlay = $('#overlay');
+  var pvDesktop = $('#pvDesktop');
+  var pvName = $('#pvName');
+  var pvMeta = $('#pvMeta');
+  var tip = $('#tip');
+  var toastEl = $('#toast');
+  var backupBtn = $('#backupBtn');
+  var settingsBtn = $('#settingsBtn');
+  var settingsOverlay = $('#settingsOverlay');
+  var settingsDialog = document.querySelector('.settings-dialog');
+  var settingsClose = $('#settingsClose');
+  var languageSelect = $('#languageSelect');
+  var fontOptions = $('#fontOptions');
+  var storageSwitch = $('#storageSwitch');
+  var storagePath = $('#storagePath');
+  var storageChange = $('#storageChange');
+  var storageHint = $('#storageHint');
+  var pickerOverlay = $('#pickerOverlay');
+  var pickerDialog = document.querySelector('.picker-dialog');
+  var pickerPath = $('#pickerPath');
+  var pickerList = $('#pickerList');
+  var pickerCancel = $('#pickerCancel');
+  var pickerConfirm = $('#pickerConfirm');
+  var themeOptions = $('#themeOptions');
+  var themeStatus = $('#themeStatus');
+  var settingsLastFocus = null;
+  var pvUse = $('#pvUse');
+  var pvDelete = $('#pvDelete');
+  var confirmOverlay = $('#confirmOverlay');
+  var confirmText = $('#confirmText');
+  var confirmCancel = $('#confirmCancel');
+  var confirmDelete = $('#confirmDelete');
+  var confirmDialog = document.querySelector('.confirm-dialog');
+  var confirmLastFocus = null;
+  var sortTrigger = $('#sortTrigger');
+  var sortValue = $('#sortValue');
+  var sortDir = $('#sortDir');
+  var sortArrow = $('#sortArrow');
+  var sortStatus = $('#sortStatus');
+  var dialogEl = document.querySelector('.dialog');
+  var lastFocus = null;
+
+  var SORT_OPTIONS = [
+    { value: 'name', labelKey: 'sort.name' },
+    { value: 'time', labelKey: 'sort.time' },
+    { value: 'resolution', labelKey: 'sort.resolution' },
+    { value: 'count', labelKey: 'sort.count' }
+  ];
+  var sortState = { key: 'time', dir: 'desc' };
+  var sortMenu = null;
+  var sortMask = null;
+
+  var STORAGE_PATHS = {
+    documents: 'C:\\Users\\liang\\Documents\\DesktopIconBackup',
+    app: 'E:\\AI开发项目\\win桌面图标备份管理器\\backups'
+  };
+  var storageState = { mode: 'documents', custom: 'D:\\DesktopIconBackupData' };
+  var pickerSelection = '';
+  var pickerLastFocus = null;
+
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+    });
+  }
+  function pad(n){ return n < 10 ? '0' + n : String(n); }
+  function fmtTime(iso){
+    var d = new Date(iso);
+    return pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+  }
+  function fmtFull(iso){
+    var d = new Date(iso);
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+  }
+  function stampNow(){
+    var d = new Date();
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+  }
+  function colorFor(name){
+    var h = 0;
+    for (var i = 0; i < name.length; i++){ h = (h * 31 + name.charCodeAt(i)) >>> 0; }
+    return COLORS[h % COLORS.length];
+  }
+  function initials(name){
+    if (/^[\u4e00-\u9fa5]/.test(name)){ return name.slice(0, 1); }
+    var parts = name.trim().split(/\s+/);
+    var a = parts[0] ? parts[0][0] : '';
+    var b = parts[1] ? parts[1][0] : '';
+    return (a + b).toUpperCase();
+  }
+  function findBackup(id){
+    for (var i = 0; i < state.backups.length; i++){
+      if (state.backups[i].id === id) return state.backups[i];
+    }
+    return null;
+  }
+
+  function sortedBackups(){
+    var dir = sortState.dir === 'asc' ? 1 : -1;
+    return state.backups.slice().sort(function(a, b){
+      var va, vb;
+      if (sortState.key === 'name'){
+        return a.name.localeCompare(b.name, LOCALES[currentLang] || 'zh-Hans-CN') * dir;
+      }
+      if (sortState.key === 'time'){
+        va = new Date(a.createdAt).getTime();
+        vb = new Date(b.createdAt).getTime();
+      } else if (sortState.key === 'resolution'){
+        va = a.display.width * a.display.height;
+        vb = b.display.width * b.display.height;
+      } else {
+        va = a.icons.length;
+        vb = b.icons.length;
+      }
+      if (va === vb){
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      }
+      return (va - vb) * dir;
+    });
+  }
+
+  function dotsHTML(icons, w, h){
+    return icons.map(function(ic){
+      var l = (ic.x / w * 100).toFixed(3);
+      var t = (ic.y / h * 100).toFixed(3);
+      return '<i class="di" style="left:' + l + '%;top:' + t + '%;background:' + colorFor(ic.name) + '"></i>';
+    }).join('');
+  }
+
+  function cardHTML(b){
+    var w = b.display.width, h = b.display.height;
+    var useBtn = b.current
+      ? '<button class="tbtn use is-current" data-act="use" disabled>' + esc(t('card.current')) + '</button>'
+      : '<button class="tbtn use" data-act="use">' + esc(t('card.use')) + '</button>';
+    return '<article class="card" data-id="' + b.id + '">' +
+      '<div class="thumb">' +
+        '<div class="mini">' + dotsHTML(b.icons, w, h) + '</div>' +
+        (b.current ? '<span class="badge">' + esc(t('card.current')) + '</span>' : '') +
+        '<span class="res">' + w + '×' + h + '</span>' +
+        '<div class="thumb-actions">' +
+          '<button class="tbtn" data-act="preview">' + esc(t('card.preview')) + '</button>' +
+          useBtn +
+        '</div>' +
+      '</div>' +
+      '<div class="card-body">' +
+        '<div class="name-row">' +
+          '<h3 class="name" data-role="name">' + esc(b.name) + '</h3>' +
+          '<button class="icon-btn" data-act="rename" aria-label="' + esc(t('rename')) + '" title="' + esc(t('rename')) + '">' + PENCIL + '</button>' +
+        '</div>' +
+        '<p class="meta"><span>' + fmtTime(b.createdAt) + '</span><i class="sep">·</i><span>' + esc(t('card.icons', { n: b.icons.length })) + '</span><i class="sep">·</i><span>' + b.display.scale + '%</span></p>' +
+      '</div>' +
+    '</article>';
+  }
+
+  function rowHTML(b){
+    var w = b.display.width, h = b.display.height;
+    var useBtn = b.current
+      ? '<button class="row-use is-current" data-act="use" disabled>' + esc(t('card.current')) + '</button>'
+      : '<button class="row-use" data-act="use">' + esc(t('card.use')) + '</button>';
+    return '<div class="row" data-id="' + b.id + '">' +
+      '<div class="mini-wrap"><div class="mini">' + dotsHTML(b.icons, w, h) + '</div></div>' +
+      '<div class="cell-name">' +
+        '<span class="name" data-role="name">' + esc(b.name) + '</span>' +
+        '<button class="icon-btn" data-act="rename" aria-label="' + esc(t('rename')) + '" title="' + esc(t('rename')) + '">' + PENCIL + '</button>' +
+      '</div>' +
+      '<span class="cell-time">' + fmtTime(b.createdAt) + '</span>' +
+      '<span class="cell-res">' + w + '×' + h + '</span>' +
+      '<span class="cell-count">' + b.icons.length + '</span>' +
+      '<div class="row-actions">' +
+        '<button class="row-open" data-act="preview">' + esc(t('card.preview')) + '</button>' +
+        useBtn +
+      '</div>' +
+    '</div>';
+  }
+
+  function renderContent(){
+    var list = sortedBackups();
+    content.className = 'content ' + state.viewMode;
+    if (state.viewMode === 'grid'){
+      content.innerHTML = list.map(cardHTML).join('');
+    } else {
+      content.innerHTML =
+        '<div class="list-head"><span></span><span>' + esc(t('list.name')) + '</span><span>' + esc(t('list.time')) + '</span><span>' + esc(t('list.resolution')) + '</span><span>' + esc(t('list.count')) + '</span><span>' + esc(t('list.actions')) + '</span></div>' +
+        list.map(rowHTML).join('');
+    }
+  }
+
+  function updateHeader(){
+    $('#backupCount').textContent = state.backups.length;
+    $('#lastBackup').textContent = state.backups.length ? fmtFull(state.backups[0].createdAt) : '—';
+  }
+
+  function updateSeg(){
+    var btns = document.querySelectorAll('.seg button');
+    for (var i = 0; i < btns.length; i++){
+      btns[i].setAttribute('aria-pressed', btns[i].dataset.mode === state.viewMode ? 'true' : 'false');
+    }
+  }
+
+  function updateSortUI(){
+    var opt = null;
+    for (var i = 0; i < SORT_OPTIONS.length; i++){
+      if (SORT_OPTIONS[i].value === sortState.key) opt = SORT_OPTIONS[i];
+    }
+    if (!opt) opt = SORT_OPTIONS[0];
+    var asc = sortState.dir === 'asc';
+    sortValue.textContent = t(opt.labelKey);
+    sortDir.setAttribute('title', t(asc ? 'sort.dir.asc' : 'sort.dir.desc'));
+    sortDir.setAttribute('aria-label', t(asc ? 'sort.ariaAsc' : 'sort.ariaDesc'));
+    sortArrow.setAttribute('d', asc
+      ? 'M12 19V5M5 12l7-7 7 7'
+      : 'M12 5v14M19 12l-7 7-7-7');
+    sortStatus.textContent = t('sort.status', {
+      option: t(opt.labelKey),
+      dir: t(asc ? 'sort.dir.asc' : 'sort.dir.desc')
+    });
+  }
+
+  function closeSortMenu(restoreFocus){
+    if (!sortMenu) return;
+    sortMenu.remove();
+    if (sortMask) sortMask.remove();
+    sortMenu = null;
+    sortMask = null;
+    sortTrigger.setAttribute('aria-expanded', 'false');
+    if (restoreFocus) sortTrigger.focus();
+  }
+
+  function openSortMenu(){
+    if (sortMenu) return;
+    sortTrigger.setAttribute('aria-expanded', 'true');
+
+    sortMask = document.createElement('div');
+    sortMask.className = 'dd-mask';
+    sortMask.addEventListener('click', function(){ closeSortMenu(true); });
+    document.body.appendChild(sortMask);
+
+    var r = sortTrigger.getBoundingClientRect();
+    sortMenu = document.createElement('div');
+    sortMenu.className = 'dd-menu';
+    sortMenu.setAttribute('role', 'listbox');
+    sortMenu.setAttribute('aria-label', '排序方式');
+    var left = Math.max(8, Math.min(r.left, window.innerWidth - 176));
+    sortMenu.style.top = (r.bottom + 4) + 'px';
+    sortMenu.style.left = left + 'px';
+
+    SORT_OPTIONS.forEach(function(o){
+      var item = document.createElement('button');
+      item.type = 'button';
+      item.className = 'dd-item' + (o.value === sortState.key ? ' selected' : '');
+      item.setAttribute('role', 'option');
+      item.setAttribute('aria-selected', o.value === sortState.key ? 'true' : 'false');
+      item.innerHTML = '<span>' + esc(t(o.labelKey)) + '</span><span class="tick" aria-hidden="true">✓</span>';
+      item.addEventListener('click', function(){
+        sortState.key = o.value;
+        closeSortMenu(true);
+        updateSortUI();
+        renderContent();
+      });
+      sortMenu.appendChild(item);
+    });
+    document.body.appendChild(sortMenu);
+
+    sortMenu.addEventListener('keydown', function(e){
+      var items = Array.prototype.slice.call(sortMenu.querySelectorAll('.dd-item'));
+      var idx = items.indexOf(document.activeElement);
+      if (e.key === 'ArrowDown'){ e.preventDefault(); items[Math.min(idx + 1, items.length - 1)].focus(); }
+      else if (e.key === 'ArrowUp'){ e.preventDefault(); items[Math.max(idx - 1, 0)].focus(); }
+      else if (e.key === 'Home'){ e.preventDefault(); items[0].focus(); }
+      else if (e.key === 'End'){ e.preventDefault(); items[items.length - 1].focus(); }
+      else if (e.key === 'Escape'){ e.preventDefault(); e.stopPropagation(); closeSortMenu(true); }
+    });
+
+    var selected = sortMenu.querySelector('.dd-item.selected') || sortMenu.querySelector('.dd-item');
+    if (selected) selected.focus();
+  }
+
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function(){ toastEl.classList.remove('show'); }, 2400);
+  }
+
+  function beginEdit(id, el){
+    if (!el) return;
+    var b = findBackup(id);
+    if (!b) return;
+    var input = document.createElement('input');
+    input.className = 'name-input';
+    input.value = b.name;
+    input.maxLength = 40;
+    el.replaceWith(input);
+    input.focus();
+    input.select();
+    var done = false;
+    function finish(save){
+      if (done) return;
+      done = true;
+      if (save){
+        var v = input.value.trim();
+        if (v) b.name = v;
+      }
+      input.replaceWith(el);
+      el.textContent = b.name;
+      renderContent();
+      if (state.previewId === id) updatePreviewHeader();
+    }
+    input.addEventListener('keydown', function(ev){
+      ev.stopPropagation();
+      if (ev.key === 'Enter'){ ev.preventDefault(); finish(true); }
+      else if (ev.key === 'Escape'){ ev.preventDefault(); finish(false); }
+    });
+    input.addEventListener('blur', function(){ finish(true); });
+  }
+
+  function previewHTML(b){
+    var w = b.display.width, h = b.display.height;
+    return b.icons.map(function(ic){
+      var l = (ic.x / w * 100).toFixed(3);
+      var t = (ic.y / h * 100).toFixed(3);
+      return '<div class="di" data-name="' + esc(ic.name) + '" data-x="' + ic.x + '" data-y="' + ic.y + '" style="left:' + l + '%;top:' + t + '%">' +
+        '<span class="tile" style="background:' + colorFor(ic.name) + '">' + esc(initials(ic.name)) + '</span>' +
+        '<span class="dlabel">' + esc(ic.name) + '</span>' +
+      '</div>';
+    }).join('');
+  }
+
+  function updatePreviewHeader(){
+    var b = findBackup(state.previewId);
+    if (!b) return;
+    pvName.textContent = b.name;
+    pvMeta.textContent = fmtFull(b.createdAt) + ' · ' + b.display.width + '×' + b.display.height + ' @' + b.display.scale + '% · ' + t('card.icons', { n: b.icons.length });
+    pvUse.disabled = !!b.current;
+    pvUse.textContent = t(b.current ? 'card.current' : 'preview.use');
+  }
+
+  function openPreview(id){
+    var b = findBackup(id);
+    if (!b) return;
+    lastFocus = document.activeElement;
+    state.previewId = id;
+    pvDesktop.style.setProperty('--ar', (b.display.width / b.display.height).toFixed(4));
+    pvDesktop.innerHTML = previewHTML(b);
+    updatePreviewHeader();
+    overlay.setAttribute('aria-hidden', 'false');
+    overlay.classList.add('open');
+    $('#pvClose').focus();
+  }
+
+  function closePreview(){
+    if (confirmOverlay.classList.contains('open')) closeDeleteConfirm(false);
+    if (!overlay.classList.contains('open')) return;
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden', 'true');
+    state.previewId = null;
+    tip.classList.remove('show');
+    if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
+  }
+
+  function updateConfirmText(){
+    var b = findBackup(state.previewId);
+    if (!b) return;
+    var parts = t('confirm.text', { name: '\u0000' }).split('\u0000');
+    confirmText.innerHTML = esc(parts[0]) + '<b>' + esc(b.name) + '</b>' + esc(parts[1] || '');
+  }
+
+  function openDeleteConfirm(){
+    var b = findBackup(state.previewId);
+    if (!b) return;
+    updateConfirmText();
+    confirmLastFocus = document.activeElement;
+    confirmOverlay.setAttribute('aria-hidden', 'false');
+    confirmOverlay.classList.add('open');
+    confirmCancel.focus();
+  }
+
+  function closeDeleteConfirm(restoreFocus){
+    if (!confirmOverlay.classList.contains('open')) return;
+    confirmOverlay.classList.remove('open');
+    confirmOverlay.setAttribute('aria-hidden', 'true');
+    if (restoreFocus && confirmLastFocus && typeof confirmLastFocus.focus === 'function') confirmLastFocus.focus();
+  }
+
+  function t(key, params){
+    var dict = I18N[currentLang] || I18N['zh-CN'];
+    var s = dict[key];
+    if (s == null) s = I18N['zh-CN'][key];
+    if (s == null) s = key;
+    if (params){
+      for (var k in params){
+        if (Object.prototype.hasOwnProperty.call(params, k)){
+          s = s.split('{' + k + '}').join(String(params[k]));
+        }
+      }
+    }
+    return s;
+  }
+
+  function applyStaticI18n(){
+    var nodes = document.querySelectorAll('[data-i18n]');
+    for (var i = 0; i < nodes.length; i++){
+      nodes[i].textContent = t(nodes[i].getAttribute('data-i18n'));
+    }
+    var titles = document.querySelectorAll('[data-i18n-title]');
+    for (var j = 0; j < titles.length; j++){
+      titles[j].title = t(titles[j].getAttribute('data-i18n-title'));
+    }
+    var arias = document.querySelectorAll('[data-i18n-aria]');
+    for (var k = 0; k < arias.length; k++){
+      arias[k].setAttribute('aria-label', t(arias[k].getAttribute('data-i18n-aria')));
+    }
+  }
+
+  function applyLanguage(lang, silent){
+    var found = false;
+    for (var i = 0; i < LANGUAGES.length; i++){
+      if (LANGUAGES[i].value === lang){ found = true; break; }
+    }
+    currentLang = found ? lang : 'zh-CN';
+    document.documentElement.lang = currentLang;
+    try { localStorage.setItem('ui.lang', currentLang); } catch (err) {}
+    languageSelect.value = currentLang;
+    applyStaticI18n();
+    document.title = t('app.title') + ' · UI';
+    updateSeg();
+    updateSortUI();
+    updateHeader();
+    renderContent();
+    if (state.previewId) updatePreviewHeader();
+    if (confirmOverlay.classList.contains('open')) updateConfirmText();
+    if (sortMenu) closeSortMenu(false);
+    updateStorageUI();
+    themeStatus.textContent = t(document.documentElement.getAttribute('data-theme') === 'dark' ? 'themeStatus.dark' : 'themeStatus.light');
+    if (!silent){
+      var langLabel = currentLang;
+      for (var j = 0; j < LANGUAGES.length; j++){
+        if (LANGUAGES[j].value === currentLang) langLabel = LANGUAGES[j].label;
+      }
+      toast(t('toast.langChanged', { lang: langLabel }));
+    }
+  }
+
+  function applyTheme(theme, silent){
+    var mode = theme === 'dark' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', mode);
+    try { localStorage.setItem('ui.theme', mode); } catch (err) {}
+    var cards = themeOptions.querySelectorAll('.theme-card');
+    for (var i = 0; i < cards.length; i++){
+      cards[i].setAttribute('aria-checked', cards[i].dataset.theme === mode ? 'true' : 'false');
+    }
+    if (!silent) themeStatus.textContent = t('themeStatus.' + mode);
+  }
+
+  function applyFontSize(size, silent){
+    var allowed = ['small', 'normal', 'large', 'xlarge'];
+    var v = allowed.indexOf(size) === -1 ? 'normal' : size;
+    document.documentElement.setAttribute('data-font-size', v);
+    try { localStorage.setItem('ui.fontSize', v); } catch (err) {}
+    var btns = fontOptions.querySelectorAll('.font-opt');
+    for (var i = 0; i < btns.length; i++){
+      var on = btns[i].dataset.size === v;
+      btns[i].classList.toggle('active', on);
+      btns[i].setAttribute('aria-pressed', on ? 'true' : 'false');
+    }
+    updateStorageThumb();
+    if (!silent){
+      var activeBtn = fontOptions.querySelector('.font-opt[data-size="' + v + '"]');
+      var label = activeBtn ? activeBtn.textContent : v;
+      toast(t('toast.fontChanged', { size: label }));
+    }
+  }
+
+  function storagePathFor(mode){
+    if (mode === 'documents') return STORAGE_PATHS.documents;
+    if (mode === 'app') return STORAGE_PATHS.app;
+    return storageState.custom || STORAGE_PATHS.documents;
+  }
+
+  function updateStorageUI(){
+    var order = ['documents', 'app', 'custom'];
+    var idx = order.indexOf(storageState.mode);
+    if (idx < 0) idx = 0;
+    storageSwitch.setAttribute('data-index', String(idx));
+    var opts = storageSwitch.querySelectorAll('.switch-opt');
+    for (var i = 0; i < opts.length; i++){
+      opts[i].setAttribute('aria-checked', opts[i].dataset.storage === storageState.mode ? 'true' : 'false');
+    }
+    storagePath.value = storagePathFor(storageState.mode);
+    var isCustom = storageState.mode === 'custom';
+    if (isCustom) storagePath.removeAttribute('readonly');
+    else storagePath.setAttribute('readonly', 'readonly');
+    storageChange.hidden = !isCustom;
+    storageHint.textContent = t('storage.hint.' + storageState.mode);
+    updateStorageThumb();
+  }
+
+  function updateStorageThumb(){
+    var active = storageSwitch.querySelector('.switch-opt[aria-checked="true"]');
+    var thumb = storageSwitch.querySelector('.switch-thumb');
+    if (!active || !thumb) return;
+    var ar = active.getBoundingClientRect();
+    var sr = storageSwitch.getBoundingClientRect();
+    if (!ar.width) return;
+    thumb.style.left = (ar.left - sr.left - storageSwitch.clientLeft) + 'px';
+    thumb.style.width = ar.width + 'px';
+  }
+
+  function openPicker(){
+    pickerLastFocus = document.activeElement;
+    var items = pickerList.querySelectorAll('.picker-item');
+    var found = false;
+    for (var i = 0; i < items.length; i++){
+      var sel = items[i].dataset.path === storageState.custom;
+      items[i].classList.toggle('selected', sel);
+      items[i].setAttribute('aria-selected', sel ? 'true' : 'false');
+      if (sel){ found = true; pickerSelection = items[i].dataset.path; }
+    }
+    if (!found){
+      items[0].classList.add('selected');
+      items[0].setAttribute('aria-selected', 'true');
+      pickerSelection = items[0].dataset.path;
+    }
+    pickerPath.textContent = pickerSelection;
+    pickerOverlay.setAttribute('aria-hidden', 'false');
+    pickerOverlay.classList.add('open');
+    pickerCancel.focus();
+  }
+
+  function closePicker(restoreFocus){
+    if (!pickerOverlay.classList.contains('open')) return;
+    pickerOverlay.classList.remove('open');
+    pickerOverlay.setAttribute('aria-hidden', 'true');
+    if (restoreFocus && pickerLastFocus && typeof pickerLastFocus.focus === 'function') pickerLastFocus.focus();
+  }
+
+  function openSettings(){
+    settingsLastFocus = document.activeElement;
+    settingsOverlay.setAttribute('aria-hidden', 'false');
+    settingsOverlay.classList.add('open');
+    updateStorageThumb();
+    settingsClose.focus();
+  }
+
+  function closeSettings(restoreFocus){
+    if (!settingsOverlay.classList.contains('open')) return;
+    settingsOverlay.classList.remove('open');
+    settingsOverlay.setAttribute('aria-hidden', 'true');
+    if (restoreFocus && settingsLastFocus && typeof settingsLastFocus.focus === 'function') settingsLastFocus.focus();
+  }
+
+  /* ---------- 事件 ---------- */
+
+  content.addEventListener('click', function(e){
+    var holder = e.target.closest('[data-id]');
+    if (!holder) return;
+    var id = holder.dataset.id;
+    if (e.target.closest('[data-act="rename"]')){
+      e.preventDefault();
+      beginEdit(id, holder.querySelector('[data-role="name"]'));
+      return;
+    }
+    if (e.target.closest('[data-act="use"]')){
+      e.preventDefault();
+      e.stopPropagation();
+      var applied = findBackup(id);
+      if (applied){
+        state.backups.forEach(function(x){ x.current = false; });
+        applied.current = true;
+        renderContent();
+        var again = content.querySelector('[data-id="' + id + '"] [data-act="preview"]');
+        if (again) again.focus();
+        toast(t('toast.applied', { name: applied.name }));
+      }
+      return;
+    }
+    if (e.target.closest('[data-act="preview"],[data-act="open"]')){
+      e.preventDefault();
+      openPreview(id);
+    }
+  });
+
+  document.querySelectorAll('.seg button').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      state.viewMode = btn.dataset.mode;
+      localStorage.setItem('ui.viewMode', state.viewMode);
+      updateSeg();
+      renderContent();
+    });
+  });
+
+  sortTrigger.addEventListener('click', function(e){
+    e.stopPropagation();
+    if (sortMenu) closeSortMenu(true);
+    else openSortMenu();
+  });
+
+  sortDir.addEventListener('click', function(){
+    sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc';
+    updateSortUI();
+    renderContent();
+  });
+
+  window.addEventListener('resize', function(){
+    if (sortMenu) closeSortMenu(false);
+    updateStorageThumb();
+  });
+
+  backupBtn.addEventListener('click', function(){
+    if (backupBtn.disabled) return;
+    backupBtn.disabled = true;
+    backupBtn.classList.add('loading');
+    backupBtn.querySelector('.btn-label').textContent = t('toolbar.collecting');
+    setTimeout(function(){
+      var now = new Date();
+      var b = {
+        id: 'b' + Date.now(),
+        name: t('backup.default', { time: stampNow() }),
+        createdAt: now.toISOString(),
+        current: true,
+        display: { width: 2560, height: 1440, scale: 150 },
+        icons: makeIcons(131, 2560, 1440, 10)
+      };
+      state.backups.forEach(function(x){ x.current = false; });
+      state.backups.unshift(b);
+      renderContent();
+      updateHeader();
+      toast(t('toast.backedUp', { n: b.icons.length }));
+      backupBtn.disabled = false;
+      backupBtn.classList.remove('loading');
+      backupBtn.querySelector('.btn-label').textContent = t('toolbar.backup');
+    }, 1200);
+  });
+
+  $('#pvRename').addEventListener('click', function(){
+    if (!state.previewId) return;
+    var b = findBackup(state.previewId);
+    var input = document.createElement('input');
+    input.className = 'name-input';
+    input.value = b.name;
+    input.maxLength = 40;
+    pvName.replaceWith(input);
+    input.focus();
+    input.select();
+    var done = false;
+    function finish(save){
+      if (done) return;
+      done = true;
+      if (save){
+        var v = input.value.trim();
+        if (v) b.name = v;
+      }
+      input.replaceWith(pvName);
+      updatePreviewHeader();
+      renderContent();
+    }
+    input.addEventListener('keydown', function(ev){
+      ev.stopPropagation();
+      if (ev.key === 'Enter'){ ev.preventDefault(); finish(true); }
+      else if (ev.key === 'Escape'){ ev.preventDefault(); finish(false); }
+    });
+    input.addEventListener('blur', function(){ finish(true); });
+  });
+
+  $('#pvClose').addEventListener('click', closePreview);
+
+  pvDelete.addEventListener('click', openDeleteConfirm);
+  confirmCancel.addEventListener('click', function(){ closeDeleteConfirm(true); });
+  confirmOverlay.addEventListener('click', function(e){ if (e.target === confirmOverlay) closeDeleteConfirm(true); });
+
+  confirmOverlay.addEventListener('keydown', function(e){
+    if (e.key !== 'Tab') return;
+    var items = confirmDialog.querySelectorAll('button:not([disabled])');
+    if (!items.length) return;
+    var first = items[0];
+    var last = items[items.length - 1];
+    if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+  });
+
+  confirmDelete.addEventListener('click', function(){
+    var b = findBackup(state.previewId);
+    if (!b) return;
+    var name = b.name;
+    state.backups = state.backups.filter(function(x){ return x.id !== b.id; });
+    closeDeleteConfirm(false);
+    closePreview();
+    renderContent();
+    updateHeader();
+    var next = content.querySelector('[data-act="preview"]');
+    if (next) next.focus();
+    else backupBtn.focus();
+    toast(t('toast.deleted', { name: name }));
+  });
+
+  pvUse.addEventListener('click', function(){
+    var b = findBackup(state.previewId);
+    if (!b || b.current) return;
+    state.backups.forEach(function(x){ x.current = false; });
+    b.current = true;
+    renderContent();
+    toast(t('toast.applied', { name: b.name }));
+    closePreview();
+  });
+
+  overlay.addEventListener('click', function(e){ if (e.target === overlay) closePreview(); });
+
+  overlay.addEventListener('keydown', function(e){
+    if (e.key !== 'Tab') return;
+    var items = dialogEl.querySelectorAll('button:not([disabled]), input:not([disabled]), [href], select, textarea, [tabindex]:not([tabindex="-1"])');
+    if (!items.length) return;
+    var first = items[0];
+    var last = items[items.length - 1];
+    if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+  });
+
+  document.addEventListener('keydown', function(e){
+    if (e.key !== 'Escape') return;
+    if (pickerOverlay.classList.contains('open')){ e.preventDefault(); closePicker(true); return; }
+    if (confirmOverlay.classList.contains('open')){ e.preventDefault(); closeDeleteConfirm(true); return; }
+    if (settingsOverlay.classList.contains('open')){ e.preventDefault(); closeSettings(true); return; }
+    if (document.activeElement && document.activeElement.tagName === 'INPUT') return;
+    if (sortMenu){ closeSortMenu(true); return; }
+    closePreview();
+  });
+
+  settingsBtn.addEventListener('click', openSettings);
+  languageSelect.addEventListener('change', function(){ applyLanguage(languageSelect.value); });
+  fontOptions.addEventListener('click', function(e){
+    var btn = e.target.closest('.font-opt');
+    if (btn) applyFontSize(btn.dataset.size);
+  });
+
+  storageSwitch.addEventListener('click', function(e){
+    var btn = e.target.closest('.switch-opt');
+    if (!btn) return;
+    storageState.mode = btn.dataset.storage;
+    try { localStorage.setItem('ui.storageMode', storageState.mode); } catch (err) {}
+    updateStorageUI();
+  });
+
+  storageSwitch.addEventListener('keydown', function(e){
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    e.preventDefault();
+    var opts = Array.prototype.slice.call(storageSwitch.querySelectorAll('.switch-opt'));
+    var idx = opts.indexOf(document.activeElement);
+    if (idx < 0) return;
+    var step = e.key === 'ArrowRight' ? 1 : -1;
+    var next = opts[(idx + step + opts.length) % opts.length];
+    next.focus();
+    next.click();
+  });
+
+  storagePath.addEventListener('input', function(){
+    if (storageState.mode !== 'custom') return;
+    storageState.custom = storagePath.value;
+    try { localStorage.setItem('ui.customPath', storageState.custom); } catch (err) {}
+  });
+
+  storageChange.addEventListener('click', openPicker);
+
+  pickerList.addEventListener('click', function(e){
+    var item = e.target.closest('.picker-item');
+    if (!item) return;
+    var items = pickerList.querySelectorAll('.picker-item');
+    for (var i = 0; i < items.length; i++){
+      items[i].classList.remove('selected');
+      items[i].setAttribute('aria-selected', 'false');
+    }
+    item.classList.add('selected');
+    item.setAttribute('aria-selected', 'true');
+    pickerSelection = item.dataset.path;
+    pickerPath.textContent = pickerSelection;
+  });
+  pickerCancel.addEventListener('click', function(){ closePicker(true); });
+  pickerOverlay.addEventListener('click', function(e){ if (e.target === pickerOverlay) closePicker(true); });
+  pickerOverlay.addEventListener('keydown', function(e){
+    if (e.key !== 'Tab') return;
+    var items = pickerDialog.querySelectorAll('button:not([disabled])');
+    if (!items.length) return;
+    var first = items[0];
+    var last = items[items.length - 1];
+    if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+  });
+  pickerConfirm.addEventListener('click', function(){
+    storageState.custom = pickerSelection;
+    storageState.mode = 'custom';
+    try {
+      localStorage.setItem('ui.customPath', pickerSelection);
+      localStorage.setItem('ui.storageMode', 'custom');
+    } catch (err) {}
+    closePicker(true);
+    updateStorageUI();
+  });
+  settingsClose.addEventListener('click', function(){ closeSettings(true); });
+  settingsOverlay.addEventListener('click', function(e){ if (e.target === settingsOverlay) closeSettings(true); });
+
+  settingsOverlay.addEventListener('keydown', function(e){
+    if (e.key !== 'Tab') return;
+    var items = settingsDialog.querySelectorAll('button:not([disabled]), input:not([disabled]), [href], select, textarea, [tabindex]:not([tabindex="-1"])');
+    if (!items.length) return;
+    var first = items[0];
+    var last = items[items.length - 1];
+    if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+  });
+
+  themeOptions.addEventListener('click', function(e){
+    var card = e.target.closest('.theme-card');
+    if (card) applyTheme(card.dataset.theme);
+  });
+
+  themeOptions.addEventListener('keydown', function(e){
+    var keys = ['ArrowDown','ArrowUp','ArrowLeft','ArrowRight'];
+    if (keys.indexOf(e.key) === -1) return;
+    e.preventDefault();
+    var cards = Array.prototype.slice.call(themeOptions.querySelectorAll('.theme-card'));
+    var idx = cards.indexOf(document.activeElement);
+    if (idx === -1) return;
+    var step = (e.key === 'ArrowDown' || e.key === 'ArrowRight') ? 1 : -1;
+    var nextCard = cards[(idx + step + cards.length) % cards.length];
+    nextCard.focus();
+    nextCard.click();
+  });
+
+  pvDesktop.addEventListener('mouseover', function(e){
+    var di = e.target.closest('.di');
+    if (!di) return;
+    tip.textContent = di.dataset.name + ' · (' + di.dataset.x + ', ' + di.dataset.y + ')';
+    tip.classList.add('show');
+  });
+  pvDesktop.addEventListener('mousemove', function(e){
+    if (!tip.classList.contains('show')) return;
+    var x = Math.min(e.clientX + 14, window.innerWidth - tip.offsetWidth - 12);
+    var y = Math.min(e.clientY + 16, window.innerHeight - tip.offsetHeight - 12);
+    tip.style.left = x + 'px';
+    tip.style.top = y + 'px';
+  });
+  pvDesktop.addEventListener('mouseout', function(e){
+    var di = e.target.closest('.di');
+    if (di && !di.contains(e.relatedTarget)) tip.classList.remove('show');
+  });
+
+  var savedLang = 'zh-CN';
+  try { savedLang = localStorage.getItem('ui.lang') || 'zh-CN'; } catch (err) {}
+
+  var savedMode = 'documents', savedCustom = '';
+  try {
+    savedMode = localStorage.getItem('ui.storageMode') || 'documents';
+    savedCustom = localStorage.getItem('ui.customPath') || '';
+  } catch (err) {}
+  if (savedCustom) storageState.custom = savedCustom;
+  if (['documents', 'app', 'custom'].indexOf(savedMode) !== -1) storageState.mode = savedMode;
+
+  var savedFont = 'normal';
+  try { savedFont = localStorage.getItem('ui.fontSize') || 'normal'; } catch (err) {}
+  applyFontSize(savedFont, true);
+
+  var savedTheme = 'light';
+  try { savedTheme = localStorage.getItem('ui.theme') || 'light'; } catch (err) {}
+  applyTheme(savedTheme, true);
+  applyLanguage(savedLang, true);
+})();
+</script>
+</body>
+</html>
